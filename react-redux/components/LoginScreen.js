@@ -26,6 +26,7 @@ const LoginScreen = () => {
     return (
         <KeyboardAwareScrollView style={styles.container} >
             <View style={styles.miniContainer}>
+
                 <Image
                     source={require("../../assets/icon.png")}
                     style={styles.icon}
@@ -69,11 +70,8 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: '#202256',
         width: width,
-        height: height / 2,
-        position: "relative"
     },
     miniContainer: {
         justifyContent: "center",
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     },
 
     icon: {
-        marginTop: height / 1,
+        marginTop: height / 6,
         width: width / 2,
         height: width / 2,
     },
@@ -89,7 +87,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: '#fff',
         fontWeight: 'bold',
-        marginTop: height / 10,
+        marginTop: height / 30,
 
 
     },
@@ -100,9 +98,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginTop: height / 27,
         width: width,
-        height: height / 2,
-        borderRadius: 20,
-        position: "relative"
+        height: height / 2.11,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     usernameTitle: {
         fontSize: 20,
