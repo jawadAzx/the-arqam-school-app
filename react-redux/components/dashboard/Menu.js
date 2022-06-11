@@ -50,7 +50,7 @@ const Menu = () => {
                     <Icon name="calendar-check-o" type="font-awesome" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
                         left: width / 1000 - 5,
-                        top: height / 6000 - 2,
+                        top: height / 6000 - 5,
                     }}
                     />
                     <Text style={styles.menuText}>Attendance</Text>
@@ -60,7 +60,7 @@ const Menu = () => {
                     <Icon name="dollar-bill" type="foundation" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
                         left: width / 1000 - 5,
-                        top: height / 6000 - 2,
+                        top: height / 300,
                     }}
                     />
                     <Text style={styles.menuText}>Fee Details</Text>
@@ -70,7 +70,7 @@ const Menu = () => {
                     <Icon name="results" type="foundation" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
                         left: width / 1000 - 5,
-                        top: height / 6000 - 2,
+                        top: height / 500 ,
                     }}
                     />
                     <Text style={styles.menuText}>Report Cards</Text>
@@ -80,7 +80,7 @@ const Menu = () => {
                     <Icon name="user" type="entypo" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
                         left: width / 1000 - 5,
-                        top: height / 6000 - 2,
+                        top: height / 6000 - 5,
                     }}
                     />
                     <Text style={styles.menuText}>Profile</Text>
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginLeft: width / 10,
         marginTop: height / 20,
+        width: width,
     },
     menuText: {
         fontSize: 25,
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
         width: width / 2,
         height: height / 13,
         backgroundColor: "#FF0000",
-        marginTop: height / 9,
+        marginTop: height / 7,
         marginBottom: height / 9,
         borderRadius: 20,
         marginLeft: width / 4,
