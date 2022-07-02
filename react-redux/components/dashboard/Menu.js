@@ -20,7 +20,7 @@ import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { Icon } from "react-native-elements";
 
-const Menu = () => {
+const Menu = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topContainer}>
@@ -31,11 +31,17 @@ const Menu = () => {
                     right: width / 15,
                     top: height / 13,
                 }}
-                    onPress={() => Vibration.vibrate(40)} />
+                    onPress={() => {
+                        Vibration.vibrate(40)
+                        navigation.navigate('Dashboard')
+                    }} />
             </View>
             <View style={styles.bottomContainer}>
 
-                <TouchableOpacity style={styles.menuItem} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('Dashboard')
+                }}
                 >
                     <Icon name="home" type="entypo" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
@@ -55,7 +61,10 @@ const Menu = () => {
                     />
                     <Text style={styles.menuText}>Attendance</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('FeeDetails')
+                }}
                 >
                     <Icon name="dollar-bill" type="foundation" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
@@ -70,12 +79,15 @@ const Menu = () => {
                     <Icon name="results" type="foundation" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
                         left: width / 1000 - 5,
-                        top: height / 500 ,
+                        top: height / 500,
                     }}
                     />
                     <Text style={styles.menuText}>Report Cards</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('Profile')
+                }}
                 >
                     <Icon name="user" type="entypo" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
@@ -85,7 +97,10 @@ const Menu = () => {
                     />
                     <Text style={styles.menuText}>Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.logoutButton} onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('Home')
+                }}
                 >
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>

@@ -24,7 +24,7 @@ import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import ExpandableCard from "../dashboard/ExpandableCard";
 
-const FeeDetails = () => {
+const FeeDetails = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
 
     const toggleOverlay = () => {
@@ -51,7 +51,11 @@ const FeeDetails = () => {
                         disabledStyle={{
                             backgroundColor: "transparent",
                         }}
-                        onPress={() => Vibration.vibrate(40)} />
+                        onPress={() => {
+                            Vibration.vibrate(40)
+                            navigation.navigate('Dashboard')
+
+                        }} />
                     <Text style={styles.LeftContainerTitle}>Fee Details</Text>
 
 
@@ -63,7 +67,7 @@ const FeeDetails = () => {
             <ScrollView style={styles.bottomContainer}>
                 {/* Go into the card to manage the color of white 3 dots */}
                 <ExpandableCard
-                    
+
                     collapsedCardItems={[
                         { label: 'June 2022', value: '' },
                         { label: 'Rs 2000', value: 'PAID' },
@@ -80,10 +84,10 @@ const FeeDetails = () => {
                     style={styles.card}
                     // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
                     // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20,color:"#fff" }}
+                    labelStyle={{ fontSize: 20, color: "#fff" }}
                 />
                 <ExpandableCard
-                    
+
                     collapsedCardItems={[
                         { label: 'June 2022', value: '' },
                         { label: 'Rs 2000', value: 'PAID' },
@@ -100,7 +104,7 @@ const FeeDetails = () => {
                     style={styles.card}
                     // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
                     // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20,color:"#fff" }}
+                    labelStyle={{ fontSize: 20, color: "#fff" }}
                 />
                 <ExpandableCard
                     collapsedCardItems={[
@@ -119,7 +123,7 @@ const FeeDetails = () => {
                     style={styles.card}
                     // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
                     // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20,color:"#fff" }}
+                    labelStyle={{ fontSize: 20, color: "#fff" }}
                 />
             </ScrollView>
         </SafeAreaView >
@@ -192,12 +196,12 @@ const styles = StyleSheet.create({
     card: {
         marginTop: height / 30,
         backgroundColor: '#6E5DCF',
-        marginHorizontal: width/20,
-        marginVertical: height/50,
+        marginHorizontal: width / 20,
+        marginVertical: height / 50,
         width: width - 40,
         borderTopLeftRadius: 20,
         borderBottomRightRadius: 20,
-        
+
 
     },
 })

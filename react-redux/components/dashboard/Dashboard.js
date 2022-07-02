@@ -23,14 +23,17 @@ import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
-const Dashboard = () => {
+const Dashboard = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
 
     const toggleOverlay = () => {
         Vibration.vibrate(60)
         setVisible(!visible);
     };
-
+    const handlePress = () => {
+        Vibration.vibrate(40)
+        navigation.navigate('Menu')
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topContainer}>
@@ -52,7 +55,7 @@ const Dashboard = () => {
                         disabledStyle={{
                             backgroundColor: "transparent",
                         }}
-                        onPress={() => Vibration.vibrate(40)} />
+                        onPress={handlePress} />
 
 
                 </View>
@@ -75,7 +78,7 @@ const Dashboard = () => {
                             <Text>Hello from Overlay!</Text>
                         </Overlay>
                     </Card>
-                    
+
 
                 </View>
             </View>

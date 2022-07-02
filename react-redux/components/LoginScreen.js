@@ -21,7 +21,7 @@ import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
     console.log(width, height, height / 2);
     return (
         <KeyboardAwareScrollView style={styles.container} >
@@ -57,7 +57,7 @@ const LoginScreen = () => {
                     autoCorrect={false}
                     secureTextEntry={true}
                 />
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Dashboard")}>
 
                     <Text style={styles.buttonText}>
                         Sign In
