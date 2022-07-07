@@ -22,7 +22,7 @@ const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Profile = ({ navigation }) => {
-    console.log(width, height, height / 2);
+    const user = useSelector((state) => state.loginReducer.user);
     return (
         <KeyboardAwareScrollView style={styles.container} >
             <View style={styles.miniContainer}>
@@ -32,10 +32,10 @@ const Profile = ({ navigation }) => {
                     style={styles.icon}
                 />
                 <Text style={styles.title}>
-                    Jawad Azhar
+                    {user.name}
                 </Text>
                 <Text style={styles.subtitle}>
-                    Class VI B
+                    Class {user.grade} {user.section}
                 </Text>
             </View>
             <View style={styles.lowerBox}>
@@ -44,7 +44,7 @@ const Profile = ({ navigation }) => {
                         Roll number
                     </Text>
                     <Text style={styles.valueText}>
-                        1234
+                        {user.id}
                     </Text>
                 </View>
                 <View style={styles.line}>
@@ -54,7 +54,7 @@ const Profile = ({ navigation }) => {
                         Date of Birth
                     </Text>
                     <Text style={styles.valueText}>
-                        10 Oct 1969
+                        {user.dob}
                     </Text>
                 </View>
                 <View style={styles.line}>
@@ -64,7 +64,7 @@ const Profile = ({ navigation }) => {
                         Father's Name
                     </Text>
                     <Text style={styles.valueText}>
-                        Azhar Javed
+                        {user.fatherName}
                     </Text>
                 </View>
                 <View style={styles.line}>
@@ -74,7 +74,7 @@ const Profile = ({ navigation }) => {
                         Emergency Contact
                     </Text>
                     <Text style={styles.valueText}>
-                        +923008121233
+                        {user.emergencyContact}
                     </Text>
                 </View>
 

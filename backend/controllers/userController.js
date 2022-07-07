@@ -31,9 +31,25 @@ const getUserById = async (req, res, next) => {
         res.status(400).send(error.message);
     }
 }
+const loginUser = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const id = data["id"];
+        const user = await firestore.collection('users').doc(id).get();
+        if (user.exists && user.data().password === data.password) {
+            res.send(user.data());
+        } else {
+            res.send("User not found");
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
 
 module.exports = {
     addUser,
     getUser,
-    getUserById
+    getUserById,
+    loginUser
 }

@@ -15,17 +15,20 @@ import {
     SafeAreaView,
     Vibration
 } from "react-native";
-
+import { useSelector, useDispatch } from "react-redux";
 import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { Icon } from "react-native-elements";
-
+import { logout } from '../../actions/loginAction'
 const Menu = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.loginReducer.user);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topContainer}>
-                <Text style={styles.leftContainerTitle}>Jawad Azhar Ch</Text>
-                <Text style={styles.leftContainerSubTitle}> Class VI Red </Text>
+                <Text style={styles.leftContainerTitle}>{user.name}</Text>
+                <Text style={styles.leftContainerSubTitle}> Class {user.grade} {user.section} </Text>
                 <Icon name="cross" type="entypo" color="#fff" size={width / 12} containerStyle={{
                     position: "absolute",
                     right: width / 15,
@@ -51,7 +54,9 @@ const Menu = ({ navigation }) => {
                     />
                     <Text style={styles.menuText}>Home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    Vibration.vibrate(40)
+                }}
                 >
                     <Icon name="calendar-check-o" type="font-awesome" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",
@@ -99,6 +104,7 @@ const Menu = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.logoutButton} onPress={() => {
                     Vibration.vibrate(40)
+                    dispatch(logout())
                     navigation.navigate('Home')
                 }}
                 >

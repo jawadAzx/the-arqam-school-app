@@ -11,18 +11,45 @@ import {
     ActivityIndicator,
     Dimensions,
     TouchableOpacity,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Vibration
 } from "react-native";
-import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useFonts } from "expo-font";
+import { isLoaded, useFonts } from "expo-font";
+import { useState } from "react";
 const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { login, clearQueryState } from "../actions/loginAction";
 const LoginScreen = ({ navigation }) => {
-    console.log(width, height, height / 2);
+    const [loginId, setLoginId] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+
+    const processLogin = () => {
+        Vibration.vibrate(40);
+        setLoading(true);
+        dispatch(login(loginId, loginPassword));
+    }
+
+    let allowed = useSelector((state) => state.loginReducer).allowed;
+    let queryRun = useSelector((state) => state.loginReducer).queryRun;
+    // console.log(queryRun)
+    if (queryRun) {
+        if (allowed) {
+            navigation.navigate("Dashboard");
+            dispatch(clearQueryState());
+        }
+        else {
+            Alert.alert("Login Failed", "Please check your login credentials");
+            dispatch(clearQueryState());
+        }
+        setLoading(false);
+    }
+
+
     return (
         <KeyboardAwareScrollView style={styles.container} >
             <View style={styles.miniContainer}>
@@ -45,6 +72,8 @@ const LoginScreen = ({ navigation }) => {
                     placeholderTextColor="#aaa"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    onChangeText={(text) => setLoginId(text)}
+                    value={loginId}
                 />
                 <Text style={styles.passwordTitle}>
                     Password
@@ -56,14 +85,28 @@ const LoginScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry={true}
+                    onChangeText={(text) => setLoginPassword(text)}
+                    value={loginPassword}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Dashboard")}>
+
+                {loading ? (
+                    <ActivityIndicator
+                        size="large"
+                        color="#609cc1"
+                        style={{
+                            position: "relative",
+                            marginTop: height / 50,
+                            marginLeft: width / 2 - 20,
+                        }}
+                    />
+                ) : <TouchableOpacity style={styles.button} onPress={processLogin}>
 
                     <Text style={styles.buttonText}>
                         Sign In
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
+
         </KeyboardAwareScrollView>
     )
 }

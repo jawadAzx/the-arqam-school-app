@@ -21,10 +21,9 @@ import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-import ExpandableCard from "../dashboard/ExpandableCard";
 
-const FeeDetails = ({ navigation }) => {
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+const Attendance = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
 
     const toggleOverlay = () => {
@@ -56,7 +55,7 @@ const FeeDetails = ({ navigation }) => {
                             navigation.navigate('Menu')
 
                         }} />
-                    <Text style={styles.LeftContainerTitle}>Fee Details</Text>
+                    <Text style={styles.LeftContainerTitle}>Attendance</Text>
 
 
                 </View>
@@ -65,66 +64,7 @@ const FeeDetails = ({ navigation }) => {
                 </View>
             </View>
             <ScrollView style={styles.bottomContainer}>
-                {/* Go into the card to manage the color of white 3 dots */}
-                <ExpandableCard
-
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
-                <ExpandableCard
-
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
-                <ExpandableCard
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
+                
             </ScrollView>
         </SafeAreaView >
     )
@@ -205,4 +145,4 @@ const styles = StyleSheet.create({
 
     },
 })
-export default FeeDetails
+export default Attendance

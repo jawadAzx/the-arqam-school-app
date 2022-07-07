@@ -11,10 +11,10 @@ import {
     Dimensions,
     TouchableOpacity,
     KeyboardAvoidingView,
-    Vibration
+    Vibration,
+    FlatList
 } from "react-native";
 import { useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFonts } from "expo-font";
@@ -22,17 +22,45 @@ const { width, height } = Dimensions.get("screen");
 import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-
+import { getAnnouncements } from "../../actions/announcementActions";
+// const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
+const colors = ["#32213A", "#383B53", "#66717E", "#D4D6B9", "#D1CAA1"];
 const Dashboard = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const [get, setGet] = useState(true);
     const [visible, setVisible] = useState(false);
-
-    const toggleOverlay = () => {
+    const [notSeperate, setNotSeperate] = useState(true);
+    const [announcementIndex, setAnnouncementIndex] = useState(0);
+    const user = useSelector((state) => state.loginReducer.user);
+    const toggleOverlay = (idx) => {
         Vibration.vibrate(60)
         setVisible(!visible);
+        setNotSeperate(!notSeperate);
+        setAnnouncementIndex(idx);
+        console.log(announcementIndex)
     };
     const handlePress = () => {
         Vibration.vibrate(40)
         navigation.navigate('Menu')
+    }
+    if (get) {
+        dispatch(getAnnouncements());
+        setGet(false);
+    }
+    // timeout
+    // setTimeout(() => {
+    //     setGet(true);
+    // }, 3600000);
+
+
+    let announcementsData = useSelector((state) => state.announcementReducer.announcements);
+    if (announcementsData.length > 0) {
+
+
+        // sort announcements by time and date
+        announcementsData = announcementsData.sort((a, b) => {
+            return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
+        });
     }
     return (
         <SafeAreaView style={styles.container}>
@@ -60,32 +88,58 @@ const Dashboard = ({ navigation }) => {
 
                 </View>
                 <View style={styles.rightContainer}>
-                    <Text style={styles.rightContainerTitle}>Jawad Azhar Ch</Text>
-                    <Text style={styles.rightContainerSubTitle}> Class VI Red </Text>
+                    <Text style={styles.rightContainerTitle}>{user.name}</Text>
+                    <Text style={styles.rightContainerSubTitle}> Class {user.grade} {user.section} </Text>
                 </View>
             </View>
             <View style={styles.bottomContainer}>
-                <Text style={styles.bottomContainerHeading} > Notice Board </Text>
-                <View style={styles.cardContainer}>
-                    <Card style={styles.card} onPress={toggleOverlay}>
-                        <Card.Content style={styles.cardContent}>
-                            <Title style={styles.cardTitle}>Card title</Title>
-                            <Paragraph style={styles.cardParagraph}>Card content</Paragraph>
-                        </Card.Content>
 
-                        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} animationType="fade"
-                            transparent>
-                            <Text>Hello from Overlay!</Text>
-                        </Overlay>
-                    </Card>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+                    <Text style={styles.bottomContainerHeading} > Notice Board </Text>
+                    <View style={styles.cardContainer}>
+                        {announcementsData.length > 0 ?
+                            announcementsData.map((announcement, index) => {
+                                return (
+                                    // Chose from card1 to card 5
+                                    <Card
+                                        key={index}
+                                        // conditional styling
+                                        style={index % 5 === 0 ? styles.card1 : index % 5 === 1 ? styles.card2 : index % 5 === 2 ? styles.card3 : index % 5 === 3 ? styles.card4 : styles.card0}
+                                        onPress={() => {
+                                            toggleOverlay(index)
+                                        }}
+                                    >
+                                        <Card.Content style={styles.cardContent}>
+                                            <Title style={styles.cardTitle}>{announcement.title}</Title>
+                                        </Card.Content>
+                                        <Card.Content style={styles.cardDateContainer}>
+                                            <Text style={styles.cardParagraph}>{announcementsData[announcementIndex].date} </Text>
 
+                                        </Card.Content>
 
-                </View>
+                                        <Overlay isVisible={visible} onBackdropPress={() => toggleOverlay(index)} animationType="fade"
+                                            transparent>
+                                            <Text>{announcementsData[announcementIndex].description}</Text>
+
+                                            <Text>{announcementsData[announcementIndex].time} </Text>
+                                        </Overlay>
+                                    </Card>
+                                )
+                            })
+                            :
+                            <Text style={styles.noAnnouncements}>No announcements  </Text>
+
+                        }
+                    </View>
+                </ScrollView>
             </View>
+
         </SafeAreaView >
     )
 }
 const styles = StyleSheet.create({
+    // make color pallet
+
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -135,7 +189,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: width,
-        height: height / 10,
+        // height: height / 10,
         borderTopRightRadius: 20,
         marginTop: - height / 30,
     },
@@ -153,10 +207,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: width,
-        height: height / 2,
+        // height: height / 2,
+        marginBottom: height / 30,
+
+
+
     },
-    card: {
-        backgroundColor: '#6E5DCF',
+    card0: {
+        backgroundColor: colors[0],
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
@@ -166,31 +224,117 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
         marginTop: height / 30,
         height: height / 7,
-
-
     },
+    card1: {
+        backgroundColor: colors[1],
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginRight: width / 16,
+        marginLeft: width / 16,
+        borderTopLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        marginTop: height / 30,
+        height: height / 7,
+    },
+    card2: {
+        backgroundColor: colors[2],
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginRight: width / 16,
+        marginLeft: width / 16,
+        borderTopLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        marginTop: height / 30,
+        height: height / 7,
+    },
+    card3: {
+        backgroundColor: colors[3],
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginRight: width / 16,
+        marginLeft: width / 16,
+        borderTopLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        marginTop: height / 30,
+        height: height / 7,
+    },
+
+    card4: {
+        backgroundColor: colors[4],
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginRight: width / 16,
+        marginLeft: width / 16,
+        borderTopLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        marginTop: height / 30,
+        height: height / 7,
+    },
+    // card5: {
+    //     backgroundColor: colors[],
+    //     flexDirection: 'row',
+    //     justifyContent: 'flex-start',
+    //     alignItems: 'flex-start',
+    //     marginRight: width / 16,
+    //     marginLeft: width / 16,
+    //     borderTopLeftRadius: 20,
+    //     borderBottomRightRadius: 20,
+    //     marginTop: height / 30,
+    //     height: height / 7,
+    // },
+
     cardContent: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: width,
         height: height / 10,
         borderTopLeftRadius: 20,
         borderBottomRightRadius: 20,
+        flexWrap: 'wrap',
+        textAlign: 'left',
+
+
     },
     cardTitle: {
-        color: '#1560bd',
+        flex: 1,
+        color: '#fff',
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: height / 3000,
+        // textAlign: 'center',
+        textAlign: 'left',
+
+        marginRight: width / 8.6,
+
+    },
+    cardDateContainer: {
+
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+
+        width: width / 1.15,
 
     },
     cardParagraph: {
         color: '#D3D3D3',
         fontSize: 15,
+        marginBottom: height / 100
+    },
+    noAnnouncements: {
+        color: '#1560bd',
+        fontSize: 20,
+        fontWeight: 'bold',
         marginTop: height / 3000,
+        marginLeft: width / 25,
     }
+
 
 
 })

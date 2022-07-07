@@ -10,12 +10,13 @@ import Dashboard from './react-redux/components/dashboard/Dashboard';
 import Menu from './react-redux/components/dashboard/Menu';
 import FeeDetails from './react-redux/components/dashboard/FeeDetails';
 import Profile from './react-redux/components/dashboard/Profile';
+import Attendance from './react-redux/components/dashboard/Attendance';
 export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName="Attendance"
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="Home" component={LoginScreen} />
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Menu" component={Menu} />
           <Stack.Screen name="FeeDetails" component={FeeDetails} />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Attendance" component={Attendance} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
