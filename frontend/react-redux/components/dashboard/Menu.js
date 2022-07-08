@@ -55,6 +55,7 @@ const Menu = ({ navigation }) => {
                     <Text style={styles.menuText}>Home</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    navigation.navigate('Attendance')
                     Vibration.vibrate(40)
                 }}
                 >

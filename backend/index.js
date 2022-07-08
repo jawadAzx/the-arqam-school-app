@@ -13,4 +13,4 @@ app.use(bodyParser.json());
 app.use('/api/user', userRoutes);
 app.use('/api/announcement', announcementRoutes);
 
-app.listen(config.port, () => console.log('App is listening on url http://10.130.10.16:' + config.port));
+app.listen(config.port, () => console.log('App is listening on url http://'+config.url+':' + config.port));
