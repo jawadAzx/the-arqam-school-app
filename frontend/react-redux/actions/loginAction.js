@@ -8,7 +8,6 @@ export const login = (loginId, loginPassword) => {
 
     };
     return (dispatch) => {
-        console.log(address + "/api/user/login", body)
         axios.post(address + "/api/user/login", body)
             .then((response) => {
                 if (response.data === "User not found") {

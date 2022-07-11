@@ -13,7 +13,7 @@ import {
     KeyboardAvoidingView,
     Vibration,
 } from "react-native";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -21,16 +21,90 @@ import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
-
+import { getUserAttendance } from "../../actions/attendanceActions";
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 const Attendance = ({ navigation }) => {
-    const [visible, setVisible] = useState(false);
+    // get today month
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.loginReducer.user);
+    const today = new Date();
+    const monthToday = today.getMonth() + 1;
+    const [month, setMonth] = useState(monthToday);
+    const [get, setGet] = useState(true);
+    const [firstUpdate, setFirstUpdate] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [presentDates, setPresentDates] = useState([]);
+    const [absentDates, setAbsentDates] = useState([]);
+    const [leaveDates, setLeaveDates] = useState([]);
 
-    const presentDates = ["2022-07-04", "2022-07-05", "2022-07-06", "2022-07-07"]
-    const absentDates = ["2022-07-01", "2022-07-02", "2022-07-03"]
-    const leaveDates = ["2022-07-08", "2022-07-09", "2022-07-10"]
+
+    if (get) {
+        dispatch(getUserAttendance("23100321"));
+        setGet(false);
+    }
+    const attendanceDate = useSelector((state) => state.attendanceReducer);
+    const updateDates = async (month) => {
+
+
+        ///////////
+        let monthStr = null;
+        if (month < 10) {
+            monthStr = "0" + month;
+        }
+        else {
+            monthStr = month;
+        }
+        ////////////
+        if (attendanceDate.presentDates != null) {
+            let pD = attendanceDate.presentDates.split(",");
+            pD = pD.map((item) => item.trim());
+
+            let presentDates = [];
+            for (let i = 0; i < pD.length; i++) {
+                if (pD[i].substring(5, 7) == monthStr) {
+                    presentDates.push(pD[i]);
+                }
+            }
+            setPresentDates(presentDates);
+        }
+        /////////////////////
+        if (attendanceDate.absentDates != null) {
+            let aD = attendanceDate.absentDates.split(",");
+            aD = aD.map((item) => item.trim());
+            let absentDates = [];
+            for (let i = 0; i < aD.length; i++) {
+                if (aD[i].substring(5, 7) == monthStr) {
+                    absentDates.push(aD[i]);
+                }
+            }
+            setAbsentDates(absentDates);
+        }
+        //////////////////////
+        if (attendanceDate.leaveDates != null) {
+            let lD = attendanceDate.leaveDates.split(",");
+            lD = lD.map((item) => item.trim());
+            let leaveDates = [];
+            for (let i = 0; i < lD.length; i++) {
+                if (lD[i].substring(5, 7) == monthStr) {
+                    leaveDates.push(lD[i]);
+                }
+            }
+            setLeaveDates(leaveDates);
+        }
+        //////////////////////
+
+    }
+    if (firstUpdate && attendanceDate.queryRun) {
+        updateDates(month);
+        setFirstUpdate(false);
+    }
+
+
+
+
     return (
         <SafeAreaView style={styles.container}>
+
             <View style={styles.topContainer}>
                 <View style={styles.leftContainer}>
                     <Icon
@@ -61,50 +135,62 @@ const Attendance = ({ navigation }) => {
 
                 </View>
             </View>
-            <View style={styles.bottomContainer}>
-                <Calendar
-                    //mark today date
+            {
+                !loading ?
+                    <View style={styles.bottomContainer}>
 
-                    style={{ marginTop: height / 20 }}
+                        <Calendar
+                            style={{ marginTop: height / 20 }}
+                            onMonthChange={(month) => {
+                                updateDates(month.month);
+                            }
+                            }
 
-                    markingType={'period'}
-                    markedDates={{
-                        ...presentDates.reduce((acc, curr) => {
-                            acc[curr] = { disabled: true, startingDay: true, color: '#00C853', endingDay: true }
-                            return acc
-                        }
-                            , {}),
-                        //make absent dates red
-                        ...absentDates.reduce((acc, curr) => {
-                            acc[curr] = { disabled: true, startingDay: true, color: '#D50000', endingDay: true }
-                            return acc
-                        }
+                            markingType={'period'}
+                            markedDates={{
+                                ...presentDates.reduce((acc, curr) => {
+                                    acc[curr] = { disabled: true, startingDay: true, color: '#00C853', endingDay: true }
+                                    return acc
+                                }
+                                    , {}),
+                                //make absent dates red
+                                ...absentDates.reduce((acc, curr) => {
+                                    acc[curr] = { disabled: true, startingDay: true, color: '#D50000', endingDay: true }
+                                    return acc
+                                }
 
-                            , {}),
-                        //make leave dates blue
-                        ...leaveDates.reduce((acc, curr) => {
-                            acc[curr] = { disabled: true, startingDay: true, color: '#0288D1', endingDay: true }
-                            return acc
-                        }
-                            , {}),
-                    }}
-                    enableSwipeMonths={true}
-                />
-                <View style={styles.boxesContainer}>
-                    <View style={styles.greenRectangle}>
-                        <Text style={styles.boxTextHeading}> {presentDates.length} </Text>
-                        <Text style={styles.boxText}> Present </Text>
+                                    , {}),
+                                //make leave dates blue
+                                ...leaveDates.reduce((acc, curr) => {
+                                    acc[curr] = { disabled: true, startingDay: true, color: '#0288D1', endingDay: true }
+                                    return acc
+                                }
+                                    , {}),
+                            }}
+                            enableSwipeMonths={true}
+
+                        />
+
+                        <View style={styles.boxesContainer}>
+                            <View style={styles.greenRectangle}>
+                                <Text style={styles.boxTextHeading}> {presentDates.length} </Text>
+                                <Text style={styles.boxText}> Present </Text>
+                            </View>
+                            <View style={styles.redRectangle}>
+                                <Text style={styles.boxTextHeading}> {absentDates.length} </Text>
+                                <Text style={styles.boxText}> Absent </Text>
+                            </View>
+                            <View style={styles.blueRectangle}>
+                                <Text style={styles.boxTextHeading}> {leaveDates.length} </Text>
+                                <Text style={styles.boxText}> Leave </Text>
+                            </View>
+                        </View>
+
+
                     </View>
-                    <View style={styles.redRectangle}>
-                        <Text style={styles.boxTextHeading}> {absentDates.length} </Text>
-                        <Text style={styles.boxText}> Absent </Text>
-                    </View>
-                    <View style={styles.blueRectangle}>
-                        <Text style={styles.boxTextHeading}> {leaveDates.length} </Text>
-                        <Text style={styles.boxText}> Leave </Text>
-                    </View>
-                </View>
-            </View>
+                    : <ActivityIndicator size="large" color="#00C853" />
+            }
+
         </SafeAreaView >
     )
 }
