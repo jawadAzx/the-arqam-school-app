@@ -15,6 +15,13 @@ const announcementReducer = (state = initialData, action) => {
                 ...state,
                 queryRun: false,
             };
+        case "LOGOUT":
+            return {
+                ...state,
+                announcements: {},
+                queryRun: false,
+            };
+
         default:
             return state;
     }

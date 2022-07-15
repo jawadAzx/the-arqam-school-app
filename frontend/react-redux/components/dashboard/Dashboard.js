@@ -23,6 +23,7 @@ import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { getAnnouncements } from "../../actions/announcementActions";
+import { retrieveUser } from '../../actions/loginAction';
 // const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
 const colors = ["#32213A", "#383B53", "#66717E", "#D4D6B9", "#D1CAA1"];
 const Dashboard = ({ navigation }) => {
@@ -45,13 +46,10 @@ const Dashboard = ({ navigation }) => {
     }
     if (get) {
         dispatch(getAnnouncements());
+        dispatch(retrieveUser());
         setGet(false);
-    }
-    // timeout
-    // setTimeout(() => {
-    //     setGet(true);
-    // }, 3600000);
 
+    }
 
     let announcementsData = useSelector((state) => state.announcementReducer.announcements);
     if (announcementsData.length > 0) {

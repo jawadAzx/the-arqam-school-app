@@ -19,10 +19,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { Icon } from "react-native-elements";
+import { AuthContext } from "../context"
+import { useContext } from 'react';
 import { logout } from '../../actions/loginAction'
 const Menu = ({ navigation }) => {
+    const { signOut } = useContext(AuthContext);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.loginReducer.user);
+    const processLogout = () => {
+        Vibration.vibrate(40);
+        dispatch(logout());
+        signOut();
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -104,10 +112,9 @@ const Menu = ({ navigation }) => {
                     <Text style={styles.menuText}>Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.logoutButton} onPress={() => {
-                    Vibration.vibrate(40)
-                    dispatch(logout())
-                    navigation.navigate('Home')
+                    processLogout()
                 }}
+
                 >
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>

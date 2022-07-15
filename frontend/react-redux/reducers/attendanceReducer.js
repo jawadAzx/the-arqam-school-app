@@ -20,6 +20,15 @@ const attendanceReducer = (state = initialData, action) => {
                 ...state,
                 queryRun: false,
             };
+        case "LOGOUT":
+            return {
+                ...state,
+                presentDates: [],
+                absentDates: [],
+                leaveDates: [],
+                queryRun: false,
+            };
+
         default:
             return state;
     }

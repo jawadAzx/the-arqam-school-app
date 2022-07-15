@@ -1,5 +1,6 @@
 import axios from "axios";
 import { address } from "./server";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = (loginId, loginPassword) => {
     const body = {
@@ -36,6 +37,25 @@ export const logout = () => {
         type: "LOGOUT",
     }
 }
+export const retrieveUser = () => {
+    return (dispatch) => {
+        AsyncStorage.getItem("user")
+            .then((user) => {
+                if (user) {
+                    dispatch({
+                        type: "LOGIN",
+                        payload: JSON.parse(user),
+                    });
+                }
+            }
+            )
+            .catch((error) => {
+                console.log(error, "ERROR IS HERE");
+            }
+            );
+    }
+}
+
 export const clearQueryState = () => {
     return {
         type: "CLEAR_QUERY_STATE"

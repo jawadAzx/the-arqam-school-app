@@ -15,6 +15,7 @@ import {
     Vibration
 } from "react-native";
 import axios from "axios";
+import { useContext } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { isLoaded, useFonts } from "expo-font";
@@ -22,24 +23,28 @@ import { useState } from "react";
 const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { login, clearQueryState } from "../actions/loginAction";
+import { AuthContext } from "./context"
 const LoginScreen = ({ navigation }) => {
     const [loginId, setLoginId] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const { signIn } = useContext(AuthContext);
     const dispatch = useDispatch();
 
     const processLogin = () => {
         Vibration.vibrate(40);
         setLoading(true);
         dispatch(login(loginId, loginPassword));
+        // signIn(loginId, loginPassword);
     }
 
     let allowed = useSelector((state) => state.loginReducer).allowed;
     let queryRun = useSelector((state) => state.loginReducer).queryRun;
+    let user = useSelector((state) => state.loginReducer).user;
     // console.log(queryRun)
     if (queryRun) {
         if (allowed) {
-            navigation.navigate("Dashboard");
+            signIn(user);
             dispatch(clearQueryState());
         }
         else {
@@ -99,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
                             marginLeft: width / 2 - 20,
                         }}
                     />
-                ) : <TouchableOpacity style={styles.button} onPress={processLogin}>
+                ) : <TouchableOpacity style={styles.button} onPress={() => processLogin(loginId, loginPassword)}>
 
                     <Text style={styles.buttonText}>
                         Sign In
