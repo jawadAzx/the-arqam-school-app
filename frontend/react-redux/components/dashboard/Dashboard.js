@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
 
     bottomContainer: {
         flex: 1,
-        backgroundColor: '#FFF',
+        backgroundColor: '#fff',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
@@ -285,9 +285,6 @@ const styles = StyleSheet.create({
         width: width,
         // height: height / 2,
         marginBottom: height / 30,
-
-
-
     },
     card0: {
         backgroundColor: colors[0],

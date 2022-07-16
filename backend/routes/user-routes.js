@@ -1,11 +1,18 @@
 const express = require('express');
-const { addUser, getUser, getUserById, loginUser, updateAttendace, getUserAttendance } = require('../controllers/userController');
+const multer = require('multer');
+
+const { addUser, getUser, getUserById, loginUser, updateAttendace, getUserAttendance, uploadVoucher } = require('../controllers/userController');
 
 const router = express.Router();
+
+// Setting up multer as a middleware to grab photo uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('file');
 
 router.post("/", addUser)
 router.post("/login", loginUser)
 router.post("/attendance", updateAttendace)
+router.post("/uploadVoucher", upload, uploadVoucher)
 
 router.get("/", getUser)
 router.get("/:id", getUserById)

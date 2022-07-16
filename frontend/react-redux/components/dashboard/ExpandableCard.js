@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableWithoutFeedback, Animated, Vibration } from 'react-native';
 import { PropTypes } from 'prop-types';
-
+import { Icon } from 'react-native-elements';
 const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, valueStyle, style }) => {
   const [expandedCard, setExpandedCard] = useState(false);
   const [heightCollapsed, setHeightCollapsed] = useState(0);
@@ -38,17 +38,29 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
                       <View key={i} style={{ width: '100%', alignItems: 'flex-end' }}>
                         {item}
                       </View>
+
                     );
                   }
                 })
+
               }
+
             </View>
             :
             React.isValidElement(value) ? <View key={i} style={{ width: '100%', alignItems: 'flex-end' }}> {item} </View>
-              : <View style={{ flex: 1, alignItems: 'center' }}><Text style={{ ...styles.text, ...valueStyle }}>{value}</Text></View>
+              : <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={{ ...styles.text, ...valueStyle }}>
+                  {value}
+                </Text>
+
+              </View>
+
         }
+
       </View>
+
     );
+
   };
 
   const _renderItems = (items) => {
@@ -67,36 +79,50 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
             }
           })
         }
+
+
       </React.Fragment>
     );
   };
 
   return (
-    <View style={{ ...styles.card, ...style }} 
+    <View style={{ ...styles.card, ...style }}
     >
+      {/* make a download button */}
+
       {
         heightCollapsed !== 0 && heightMaximized !== 0 ?
-          <TouchableWithoutFeedback onPress={() => { setExpandedCard(!expandedCard), Vibration.vibrate(50) }}>
-            <Animated.View style={[{ overflow: 'hidden' }, descriptionContainerAnimationStyle]}>
-              <React.Fragment>
-                {
-                  !expandedCard ?
-                    <React.Fragment>
-                      {
-                        _renderItems(collapsedCardItems)
-                      }
-                      <View
-                        style={{ width: '100%', position: 'absolute', bottom: 5 }}
-                      >
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', color: "#fff", fontSize: 24 }}>. . .</Text>
-                      </View>
-                    </React.Fragment>
-                    :
-                    _renderItems(expandedCardItems)
-                }
-              </React.Fragment>
-            </Animated.View>
-          </TouchableWithoutFeedback>
+          <View>
+            <TouchableWithoutFeedback onPress={() => { setExpandedCard(!expandedCard), Vibration.vibrate(50) }}>
+              <Animated.View style={[{ overflow: 'hidden' }, descriptionContainerAnimationStyle]}>
+                <React.Fragment>
+                  {
+                    !expandedCard ?
+                      <React.Fragment>
+                        {
+                          _renderItems(collapsedCardItems)
+                        }
+                        <View
+                          style={{ width: '100%', position: 'absolute', bottom: 5 }}
+                        >
+                          <Text style={{ textAlign: 'center', fontWeight: 'bold', color: "#fff", fontSize: 24 }}>. . .</Text>
+                        </View>
+                      </React.Fragment>
+                      :
+                      _renderItems(expandedCardItems)
+                  }
+                </React.Fragment>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Icon name="download" type="font-awesome" color="#fff" size={30} onPress={() => {
+                Vibration.vibrate(50)
+                console.log("HERL")
+              }} />
+            </View>
+          </View>
+
+
           :
           <View>
             <View onLayout={(e) => {

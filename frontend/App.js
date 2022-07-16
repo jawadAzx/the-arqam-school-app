@@ -65,7 +65,6 @@ export default function App() {
     <Provider store={store}>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer>
-          {/* <Noti /> */}
           {userToken !== null ? (
             <Stack.Navigator
               // initialRouteName="Home"

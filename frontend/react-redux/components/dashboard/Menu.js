@@ -37,15 +37,6 @@ const Menu = ({ navigation }) => {
             <View style={styles.topContainer}>
                 <Text style={styles.leftContainerTitle}>{user.name}</Text>
                 <Text style={styles.leftContainerSubTitle}> Class {user.grade} {user.section} </Text>
-                <Icon name="cross" type="entypo" color="#fff" size={width / 12} containerStyle={{
-                    position: "absolute",
-                    right: width / 15,
-                    top: height / 13,
-                }}
-                    onPress={() => {
-                        Vibration.vibrate(40)
-                        navigation.navigate('Dashboard')
-                    }} />
             </View>
             <View style={styles.bottomContainer}>
 

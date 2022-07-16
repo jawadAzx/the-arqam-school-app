@@ -11,7 +11,8 @@ import {
     ActivityIndicator,
     Dimensions,
     TouchableOpacity,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Vibration
 } from "react-native";
 import { useState } from "react";
 import axios from "axios";
@@ -20,11 +21,33 @@ import { useSelector } from "react-redux";
 import { useFonts } from "expo-font";
 const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Icon } from "react-native-elements";
 
 const Profile = ({ navigation }) => {
     const user = useSelector((state) => state.loginReducer.user);
     return (
-        <KeyboardAwareScrollView style={styles.container} >
+        <ScrollView style={styles.container} >
+            <Icon
+                name="arrow-back"
+                type="Ionicons"
+                color="#fff"
+                containerStyle={{
+                    position: "absolute",
+                    left: width / 15,
+                    top: height / 13,
+                }}
+                size={width / 10}
+                Component={TouchableOpacity}
+
+                disabledStyle={{
+                    backgroundColor: "transparent",
+                }}
+                onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('Menu')
+
+                }} />
+
             <View style={styles.miniContainer}>
 
                 <Image
@@ -80,7 +103,7 @@ const Profile = ({ navigation }) => {
 
             </View>
 
-        </KeyboardAwareScrollView>
+        </ScrollView>
     )
 }
 
