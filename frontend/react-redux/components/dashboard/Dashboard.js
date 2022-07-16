@@ -14,7 +14,7 @@ import {
     Vibration,
     FlatList
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFonts } from "expo-font";
@@ -24,53 +24,78 @@ import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { onSnapshot, collection } from '@firebase/firestore';
 import db from '../../../firebase';
-import { getAnnouncements } from "../../actions/announcementActions";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import { retrieveUser } from '../../actions/loginAction';
-// const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
-const colors = ["#32213A", "#383B53", "#66717E", "#D4D6B9", "#D1CAA1"];
+const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
+// const colors = ["#32213A", "#383B53", "#66717E", "#D4D6B9", "#D1CAA1"];
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
+});
+
+
 const Dashboard = ({ navigation }) => {
     const dispatch = useDispatch();
     const [get, setGet] = useState(true);
     const [visible, setVisible] = useState(false);
     const [notSeperate, setNotSeperate] = useState(true);
     const [announcementIndex, setAnnouncementIndex] = useState(0);
-    const [announcementsData, setAnnouncementsDate] = useState([]);
-    const [sorted, setSorted] = useState(false);
+    const [announcementsData, setAnnouncementsData] = useState([]);
     const user = useSelector((state) => state.loginReducer.user);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
     const toggleOverlay = (idx) => {
         Vibration.vibrate(60)
         setVisible(!visible);
         setNotSeperate(!notSeperate);
         setAnnouncementIndex(idx);
-        console.log(announcementIndex)
     };
     const handlePress = () => {
         Vibration.vibrate(40)
         navigation.navigate('Menu')
     }
     if (get) {
-        // dispatch(getAnnouncements());
         dispatch(retrieveUser());
         setGet(false);
     }
     useEffect(() =>
-        onSnapshot(collection(db, 'announcements'), (snapshot) => {
-            setAnnouncementsDate(snapshot.docs.map(doc => doc.data()))
-            setSorted(false)
+        onSnapshot(collection(db, 'announcements'), async (snapshot) => {
+            let oldData = announcementsData;
+            let temp = snapshot.docs.map(doc => doc.data());
+            // sort temp by id in descending order
+            temp.sort((a, b) => {
+                return b.id - a.id;
+            }
+            );
+            if (oldData.length !== temp.length && oldData.length !== 0) {
+                await schedulePushNotification(temp[0].title, temp[0].description);
+            }
+            setAnnouncementsData(temp);
+
         })
-        , [])
+        , []);
 
-    // let announcementsData = useSelector((state) => state.announcementReducer.announcements);
-    if (announcementsData.length > 0 && !sorted) {
-        let temp = announcementsData
-
-        // sort announcements by time and date
-        temp = temp.sort((a, b) => {
-            return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
-        });
-        setAnnouncementsDate(temp);
-        setSorted(true);
-    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topContainer}>
@@ -146,6 +171,48 @@ const Dashboard = ({ navigation }) => {
         </SafeAreaView >
     )
 }
+
+async function schedulePushNotification(notificationTitle, notificationBody) {
+    await Notifications.scheduleNotificationAsync({
+        content: {
+            title: notificationTitle,
+            body: notificationBody,
+        },
+        trigger: { seconds: 2 },
+    });
+}
+
+async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}
+
+
 const styles = StyleSheet.create({
     // make color pallet
 
@@ -332,7 +399,8 @@ const styles = StyleSheet.create({
 
     },
     cardParagraph: {
-        color: '#D3D3D3',
+        // color: '#D3D3D3',
+        color: "#fff",
         fontSize: 15,
         marginBottom: height / 100
     },

@@ -11,7 +11,13 @@ const addAnnouncement = async (req, res, next) => {
         // need to change date according to format 2022-07-04, current 4-7-2022
         data.date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
         data.time = time;
-        await firestore.collection('announcements').add(data);
+        let id = 0
+        const data2 = await firestore.collection('announcements').get();
+        if (data2.docs.length > 0) {
+            id = data2.docs.length ;
+        }
+        data.id = id;
+        await firestore.collection('announcements').doc(id.toString()).set(data);
         res.send("Announcement added successfully");
 
     } catch (error) {

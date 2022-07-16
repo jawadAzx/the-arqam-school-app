@@ -3,7 +3,6 @@ const firebase = require('../db');
 const User = require('../models/user');
 const firestore = firebase.firestore();
 // get FieldValue
-const FieldValue = require('firebase-admin').firestore.FieldValue;
 const addUser = async (req, res, next) => {
     try {
         const data = req.body;
