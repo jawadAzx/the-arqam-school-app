@@ -6,7 +6,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState, useEffect, useMemo, useReducer } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { AuthContext } from "./react-redux/components/context";
 import LoginScreen from './react-redux/components/LoginScreen';
 import Dashboard from './react-redux/components/dashboard/Dashboard';
@@ -14,7 +13,6 @@ import Menu from './react-redux/components/dashboard/Menu';
 import FeeDetails from './react-redux/components/dashboard/FeeDetails';
 import Profile from './react-redux/components/dashboard/Profile';
 import Attendance from './react-redux/components/dashboard/Attendance';
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -55,6 +53,7 @@ export default function App() {
       setIsLoading(false);
     }, 1000);
   }, []);
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -66,6 +65,7 @@ export default function App() {
     <Provider store={store}>
       <AuthContext.Provider value={authContext}>
         <NavigationContainer>
+          {/* <Noti /> */}
           {userToken !== null ? (
             <Stack.Navigator
               // initialRouteName="Home"

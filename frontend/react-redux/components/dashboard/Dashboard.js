@@ -14,7 +14,7 @@ import {
     Vibration,
     FlatList
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useFonts } from "expo-font";
@@ -22,6 +22,8 @@ const { width, height } = Dimensions.get("screen");
 import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { onSnapshot, collection } from '@firebase/firestore';
+import db from '../../../firebase';
 import { getAnnouncements } from "../../actions/announcementActions";
 import { retrieveUser } from '../../actions/loginAction';
 // const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
@@ -32,6 +34,8 @@ const Dashboard = ({ navigation }) => {
     const [visible, setVisible] = useState(false);
     const [notSeperate, setNotSeperate] = useState(true);
     const [announcementIndex, setAnnouncementIndex] = useState(0);
+    const [announcementsData, setAnnouncementsDate] = useState([]);
+    const [sorted, setSorted] = useState(false);
     const user = useSelector((state) => state.loginReducer.user);
     const toggleOverlay = (idx) => {
         Vibration.vibrate(60)
@@ -45,20 +49,27 @@ const Dashboard = ({ navigation }) => {
         navigation.navigate('Menu')
     }
     if (get) {
-        dispatch(getAnnouncements());
+        // dispatch(getAnnouncements());
         dispatch(retrieveUser());
         setGet(false);
-
     }
+    useEffect(() =>
+        onSnapshot(collection(db, 'announcements'), (snapshot) => {
+            setAnnouncementsDate(snapshot.docs.map(doc => doc.data()))
+            setSorted(false)
+        })
+        , [])
 
-    let announcementsData = useSelector((state) => state.announcementReducer.announcements);
-    if (announcementsData.length > 0) {
-
+    // let announcementsData = useSelector((state) => state.announcementReducer.announcements);
+    if (announcementsData.length > 0 && !sorted) {
+        let temp = announcementsData
 
         // sort announcements by time and date
-        announcementsData = announcementsData.sort((a, b) => {
+        temp = temp.sort((a, b) => {
             return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
         });
+        setAnnouncementsDate(temp);
+        setSorted(true);
     }
     return (
         <SafeAreaView style={styles.container}>

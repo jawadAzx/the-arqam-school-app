@@ -8,7 +8,8 @@ const addAnnouncement = async (req, res, next) => {
         let date = new Date();
         let time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         // add date and time to data
-        // data.date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+        // need to change date according to format 2022-07-04, current 4-7-2022
+        data.date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
         data.time = time;
         await firestore.collection('announcements').add(data);
         res.send("Announcement added successfully");
@@ -25,6 +26,7 @@ const getAnnouncements = async (req, res, next) => {
         res.status(400).send(error.message);
     }
 }
+
 
 module.exports = {
     addAnnouncement,

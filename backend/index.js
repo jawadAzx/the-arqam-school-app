@@ -6,6 +6,7 @@ const config = require('./config');
 const userRoutes = require('./routes/user-routes');
 const announcementRoutes = require('./routes/announcement-routes');
 const app = express();
+
 app.use(express.json())
 app.use(cors());
 app.use(bodyParser.json());
