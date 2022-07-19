@@ -46,6 +46,7 @@ const Dashboard = ({ navigation }) => {
     const [notSeperate, setNotSeperate] = useState(true);
     const [announcementIndex, setAnnouncementIndex] = useState(0);
     const [announcementsData, setAnnouncementsData] = useState([]);
+    const [notification, setNotification] = useState(false);
     const user = useSelector((state) => state.loginReducer.user);
     const notificationListener = useRef();
     const responseListener = useRef();
@@ -88,13 +89,15 @@ const Dashboard = ({ navigation }) => {
                 return b.id - a.id;
             }
             );
+            // console.log(oldData.length !== temp.length && oldData.length !== 0, oldData.length, temp.length, announcementsData);
+
             if (oldData.length !== temp.length && oldData.length !== 0) {
                 await schedulePushNotification(temp[0].title, temp[0].description);
             }
             setAnnouncementsData(temp);
 
         })
-        , []);
+        , [announcementsData]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -151,7 +154,7 @@ const Dashboard = ({ navigation }) => {
 
                                         </Card.Content>
 
-                                        <Overlay isVisible={visible} onBackdropPress={() => toggleOverlay(index)} animationType="fade"
+                                        <Overlay isVisible={visible && announcementIndex === index} onBackdropPress={() => toggleOverlay(index)} animationType="fade"
                                             transparent>
                                             <Text>{announcementsData[announcementIndex].description}</Text>
 

@@ -39,12 +39,11 @@ const Attendance = ({ navigation }) => {
 
 
     if (get) {
-        dispatch(getUserAttendance("23100321"));
+        dispatch(getUserAttendance(user.id));
         setGet(false);
     }
     const attendanceDate = useSelector((state) => state.attendanceReducer);
     const updateDates = async (month) => {
-
 
         ///////////
         let monthStr = null;
@@ -55,6 +54,7 @@ const Attendance = ({ navigation }) => {
             monthStr = month;
         }
         ////////////
+
         if (attendanceDate.presentDates != null) {
             let pD = attendanceDate.presentDates.split(",");
             pD = pD.map((item) => item.trim());
@@ -98,10 +98,7 @@ const Attendance = ({ navigation }) => {
         updateDates(month);
         setFirstUpdate(false);
     }
-
-
-
-
+    // console.log(attendanceDate);
     return (
         <SafeAreaView style={styles.container}>
 

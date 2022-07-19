@@ -11,6 +11,7 @@ export const login = (loginId, loginPassword) => {
     return (dispatch) => {
         axios.post(address + "/api/user/login", body)
             .then((response) => {
+                console.log(response.data)
                 if (response.data === "User not found") {
                     dispatch({
                         type: "LOGIN_FAILED",

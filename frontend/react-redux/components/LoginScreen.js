@@ -24,17 +24,27 @@ const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { login, clearQueryState } from "../actions/loginAction";
 import { AuthContext } from "./context"
+import * as Crypto from "expo-crypto";
+
 const LoginScreen = ({ navigation }) => {
     const [loginId, setLoginId] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+    const [hashedPassword, setHashedPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const { signIn } = useContext(AuthContext);
     const dispatch = useDispatch();
+    const hash = async (data) => {
+        const hash = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.SHA256,
+            data
+        );
+        setHashedPassword(hash);
+    };
 
     const processLogin = () => {
         Vibration.vibrate(40);
         setLoading(true);
-        dispatch(login(loginId, loginPassword));
+        dispatch(login(loginId, hashedPassword));
         // signIn(loginId, loginPassword);
     }
 
@@ -43,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
     let user = useSelector((state) => state.loginReducer).user;
     // console.log(queryRun)
     if (queryRun) {
-        if (allowed) {
+        if (allowed && user.type === "student") {
             signIn(user);
             dispatch(clearQueryState());
         }
@@ -90,7 +100,10 @@ const LoginScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry={true}
-                    onChangeText={(text) => setLoginPassword(text)}
+                    onChangeText={(text) => {
+                        hash(text);
+                        setLoginPassword(text)
+                    }}
                     value={loginPassword}
                 />
 
