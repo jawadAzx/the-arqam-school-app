@@ -6,7 +6,6 @@ require("firebase/storage");
 const storage = firebase.storage().ref();
 global.XMLHttpRequest = require("xhr2");
 
-
 // Add Image to Storage and return the file path
 const uploadVoucher = async (req, res) => {
     try {
@@ -36,7 +35,7 @@ const uploadVoucher = async (req, res) => {
             "voucherURL": downloadURL
 
         }
-        if (voucher == null ) {
+        if (voucher == null) {
             await firestore.collection('users').doc(id).update({
                 "vouchers": [newData]
             })
@@ -57,6 +56,19 @@ const uploadVoucher = async (req, res) => {
         res.status(400).send(error.message);
     }
 }
+
+const getUserVoucher = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const user = await firestore.collection('users').doc(id).get();
+        const vouchers = user.data()["vouchers"];
+        res.send(vouchers);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message);
+    }
+}
+
 
 
 const addUser = async (req, res, next) => {
@@ -104,33 +116,69 @@ const loginUser = async (req, res, next) => {
 const updateAttendace = async (req, res, next) => {
     try {
         const data = req.body;
-        const id = data["id"];
-        const attendanceType = data["attendanceType"];
-        const user = await firestore.collection('users').doc(id).get();
-        if (user.exists) {
-            if (attendanceType === "present") {
-                let dates = user.data()["presentDates"];
-                dates = dates + ", " + data["newDate"]
-                await firestore.collection('users').doc(id).update({
-                    "presentDates": dates
-                });
-            } else if (attendanceType === "absent") {
-                let dates = user.data()["absentDates"];
-                dates = dates + ", " + data["newDate"]
-                await firestore.collection('users').doc(id).update({
-                    "absentDates": dates
-                });
-            }
-            else if (attendanceType === "leave") {
-                let dates = user.data()["leaveDates"];
-                dates = dates + ", " + data["newDate"]
-                await firestore.collection('users').doc(id).update({
-                    "leaveDates": dates
-                });
-            }
-            res.send("Updated successfully");
-
+        const cls = data["className"] + "-" + data["classSection"];
+        const ids = data["classStudentsIds"];
+        const attendance = data["attendance"];
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (month < 10) {
+            month = "0" + month;
         }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        let dateString = year + "-" + month + "-" + day;
+
+        for (let i = 0; i < ids.length; i++) {
+            const id = ids[i];
+            const attendanceType = attendance[i];
+            const user = await firestore.collection('users').doc(id).get();
+            if (user.exists) {
+                let dates = user.data()
+                if (attendanceType === "Present") {
+                    dates = dates["presentDates"];
+                    if (dates === "") {
+                        dates = dateString;
+                    }
+                    else {
+
+                        dates = dates + ", " + dateString
+                    }
+                    await firestore.collection('users').doc(id).update({
+                        "presentDates": dates
+                    });
+                } else if (attendanceType === "Absent") {
+                    dates = dates["absentDates"];
+                    if (dates === "") {
+                        dates = dateString;
+                    }
+                    else {
+
+                        dates = dates + ", " + dateString
+                    }
+                    await firestore.collection('users').doc(id).update({
+                        "absentDates": dates
+                    });
+                }
+                else if (attendanceType === "Leave") {
+                    dates = dates["leaveDates"];
+                    if (dates === "") {
+                        dates = dateString;
+                    }
+                    else {
+                        dates = dates + ", " + dateString
+                    }
+                    await firestore.collection('users').doc(id).update({
+                        "leaveDates": dates
+                    });
+                }
+
+            }
+        }
+        res.send("Updated successfully");
+
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -152,6 +200,47 @@ const getUserAttendance = async (req, res, next) => {
     }
 }
 
+const getClassByClassId = async (req, res, next) => {
+    try {
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (day < 10) {
+            day = "0" + day;
+        }
+        let dateString = year + "-" + month + "-" + day;
+        const classId = req.params.id;
+        const data = await firestore.collection('users').get();
+        const users = data.docs.map(doc => doc.data());
+        const classUsers = users.filter(user => user.grade + "-" + user.section === classId && user.type === "student");
+        let hmm = classUsers[0]
+        let presentDates = hmm["presentDates"].split(",");
+        let absentDates = hmm["absentDates"];
+        let leaveDates = hmm["leaveDates"];
+        // check if dateString is in presentDates
+        let marked = false
+        for (let i = 0; i < presentDates.length; i++) {
+            if (presentDates[i] === dateString || absentDates === dateString || leaveDates === dateString) {
+                marked = true;
+            }
+        }
+        if (marked) {
+            res.send("Already updated");
+        }
+        else {
+            console.log("HERE")
+            res.send(classUsers);
+        }
+
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
 
 module.exports = {
     addUser,
@@ -160,5 +249,7 @@ module.exports = {
     loginUser,
     updateAttendace,
     getUserAttendance,
-    uploadVoucher
+    uploadVoucher,
+    getUserVoucher,
+    getClassByClassId
 }
