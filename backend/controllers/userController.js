@@ -7,35 +7,96 @@ const storage = firebase.storage().ref();
 global.XMLHttpRequest = require("xhr2");
 
 // Add Image to Storage and return the file path
-const uploadVoucher = async (req, res) => {
+const uploadResult = async (req, res) => {
     try {
-        const id = req.body.id
-        console.log(id)
+        const id = req.body.studentId
+        const studentClass = req.body.studentClass
+        const term = req.body.term
         const file = req.file;
         const name = file.originalname.split(".")[0];
         const type = file.originalname.split(".")[1];
         const fileName = `${name}.${type}`;
-        // Step 1. Create reference for file name in cloud storage 
+        // // Step 1. Create reference for file name in cloud storage 
         const fileRef = storage.child(fileName);
-        // Step 2. Upload the file in the bucket storage
+        // // Step 2. Upload the file in the bucket storage
         const snapshot = await fileRef.put(file.buffer);
-        // Step 3. Grab the public url
+        // // Step 3. Grab the public url
         const downloadURL = await snapshot.ref.getDownloadURL();
-        // get month
+
+        let results = await firestore.collection('users').doc(id).get();
+        results = results.data()["results"];
+
+        const newData =
+        {
+            "resultForClass": studentClass,
+            "resultUrl": downloadURL,
+            "resultForTerm": term,
+        }
+
+        if (results.length == 0) {
+            await firestore.collection('users').doc(id).update({
+                "results": [newData]
+            })
+        }
+        else {
+
+            // append newData to voucher array
+            results.push(newData);
+            // update voucher array in database
+            await firestore.collection('users').doc(id).update({
+                "results": results
+            });
+        }
+        res.send("Uploaded successfully");
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message);
+    }
+}
+
+
+const uploadVoucher = async (req, res) => {
+    try {
+        const id = req.body.studentId
+        const file = req.file;
+        const tutionFee = req.body.tutionFee;
+        const admissionFee = req.body.admissionFee;
+        const regFee = req.body.regFee;
+        const examinationFee = req.body.examinationFee;
+        const discount = req.body.discount;
+        const arrears = req.body.arrears;
+        const payable = req.body.payable;
+
+        const name = file.originalname.split(".")[0];
+        const type = file.originalname.split(".")[1];
+        const fileName = `${name}.${type}`;
+        // // Step 1. Create reference for file name in cloud storage 
+        const fileRef = storage.child(fileName);
+        // // Step 2. Upload the file in the bucket storage
+        const snapshot = await fileRef.put(file.buffer);
+        // // Step 3. Grab the public url
+        const downloadURL = await snapshot.ref.getDownloadURL();
+        // // get month
         const month = new Date().getMonth() + 1;
-        // get year
+        // // get year
         const year = new Date().getFullYear();
         let voucherForMonth = month + "-" + year;
-        // get voucher for month
+        // // get voucher for month
         let voucher = await firestore.collection('users').doc(id).get();
         voucher = voucher.data()["vouchers"];
         const newData =
         {
             "voucherForMonth": voucherForMonth,
-            "voucherURL": downloadURL
-
+            "voucherURL": downloadURL,
+            "tutionFee": tutionFee,
+            "admissionFee": admissionFee,
+            "regFee": regFee,
+            "examinationFee": examinationFee,
+            "discount": discount,
+            "arrears": arrears,
+            "payable": payable
         }
-        if (voucher == null) {
+        if (voucher.length == 0) {
             await firestore.collection('users').doc(id).update({
                 "vouchers": [newData]
             })
@@ -74,7 +135,6 @@ const getUserVoucher = async (req, res, next) => {
 const addUser = async (req, res, next) => {
     try {
         const data = req.body;
-        console.log(data["id"])
         const id = data["id"];
         await firestore.collection('users').doc(id).set(data);
         res.send("Added successfully");
@@ -144,7 +204,7 @@ const updateAttendace = async (req, res, next) => {
                     }
                     else {
 
-                        dates = dates + ", " + dateString
+                        dates = dates + "," + dateString
                     }
                     await firestore.collection('users').doc(id).update({
                         "presentDates": dates
@@ -156,7 +216,7 @@ const updateAttendace = async (req, res, next) => {
                     }
                     else {
 
-                        dates = dates + ", " + dateString
+                        dates = dates + "," + dateString
                     }
                     await firestore.collection('users').doc(id).update({
                         "absentDates": dates
@@ -168,7 +228,7 @@ const updateAttendace = async (req, res, next) => {
                         dates = dateString;
                     }
                     else {
-                        dates = dates + ", " + dateString
+                        dates = dates + "," + dateString
                     }
                     await firestore.collection('users').doc(id).update({
                         "leaveDates": dates
@@ -200,7 +260,7 @@ const getUserAttendance = async (req, res, next) => {
     }
 }
 
-const getClassByClassId = async (req, res, next) => {
+const getClassByClassIdAttendance = async (req, res, next) => {
     try {
         let date = new Date();
         let day = date.getDate();
@@ -219,9 +279,10 @@ const getClassByClassId = async (req, res, next) => {
         const classUsers = users.filter(user => user.grade + "-" + user.section === classId && user.type === "student");
         let hmm = classUsers[0]
         let presentDates = hmm["presentDates"].split(",");
-        let absentDates = hmm["absentDates"];
-        let leaveDates = hmm["leaveDates"];
+        let absentDates = hmm["absentDates"].split(",");
+        let leaveDates = hmm["leaveDates"].split(",");
         // check if dateString is in presentDates
+
         let marked = false
         for (let i = 0; i < presentDates.length; i++) {
             if (presentDates[i] === dateString || absentDates === dateString || leaveDates === dateString) {
@@ -232,10 +293,20 @@ const getClassByClassId = async (req, res, next) => {
             res.send("Already updated");
         }
         else {
-            console.log("HERE")
             res.send(classUsers);
         }
 
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+const getClassByClassId = async (req, res, next) => {
+    try {
+        const classId = req.params.id;
+        const data = await firestore.collection('users').get();
+        const users = data.docs.map(doc => doc.data());
+        const classUsers = users.filter(user => user.grade + "-" + user.section === classId && user.type === "student");
+        res.send(classUsers);
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -251,5 +322,7 @@ module.exports = {
     getUserAttendance,
     uploadVoucher,
     getUserVoucher,
-    getClassByClassId
+    getClassByClassIdAttendance,
+    getClassByClassId,
+    uploadResult
 }
