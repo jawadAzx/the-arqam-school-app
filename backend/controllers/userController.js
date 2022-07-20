@@ -121,6 +121,7 @@ const uploadVoucher = async (req, res) => {
 const getUserVoucher = async (req, res, next) => {
     try {
         const id = req.params.id;
+        console.log("down", id)
         const user = await firestore.collection('users').doc(id).get();
         const vouchers = user.data()["vouchers"];
         res.send(vouchers);

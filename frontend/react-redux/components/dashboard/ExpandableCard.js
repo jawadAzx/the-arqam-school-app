@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableWithoutFeedback, Animated, Vibration } from 'react-native';
+import {
+  View, Text, TouchableWithoutFeedback, Animated, Vibration, ActivityIndicator, Dimensions
+} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { Icon } from 'react-native-elements';
-const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, valueStyle, style }) => {
+import { WebView } from 'react-native-webview';
+const { width, height } = Dimensions.get("screen");
+
+const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, valueStyle, style, downloadLink }) => {
   const [expandedCard, setExpandedCard] = useState(false);
   const [heightCollapsed, setHeightCollapsed] = useState(0);
   const [heightMaximized, setHeightMaximized] = useState(0);
   const [heightValue] = useState(new Animated.Value(1000));
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     heightValue.setValue(heightCollapsed);
@@ -18,6 +24,30 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
       toValue: expandedCard ? heightMaximized : heightCollapsed
     }).start();
   }, [expandedCard]);
+  ///////////////////////////////////////////////////
+
+  const handleDownload = () => {
+    setDocument(true);
+    setIsLoading(true);
+  }
+
+  if (isLoading) {
+    return (
+      <View style={{ marginTop: height / 3, justifyContent: "flex-start", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <WebView
+          source={{ uri: downloadLink }}
+        />
+      </View>
+    )
+  }
+  setTimeout(() => {
+    setIsLoading(false);
+    setDocument(false);
+  }
+    , 5000);
+
+  ///////////////////////////////////////////////////
 
   const descriptionContainerAnimationStyle = (heightValue !== 0 ? { height: heightValue } : {});
 
@@ -117,6 +147,8 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               <Icon name="download" type="font-awesome" color="#fff" size={30} onPress={() => {
                 Vibration.vibrate(50)
+                // download file from downloadLink
+                handleDownload()
                 console.log("HERL")
               }} />
             </View>

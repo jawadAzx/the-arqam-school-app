@@ -70,11 +70,11 @@ export default function App() {
               // initialRouteName="Home"
               screenOptions={{ headerShown: false }}
             >
-              <Stack.Screen name="Dashboard" component={Dashboard} />
-              <Stack.Screen name="Menu" component={Menu} />
+              {/* <Stack.Screen name="Dashboard" component={Dashboard} />
+              <Stack.Screen name="Menu" component={Menu} /> */}
               <Stack.Screen name="FeeDetails" component={FeeDetails} />
-              <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="Attendance" component={Attendance} />
+              {/* <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="Attendance" component={Attendance} /> */}
             </Stack.Navigator>) :
 
             <LoginScreen />

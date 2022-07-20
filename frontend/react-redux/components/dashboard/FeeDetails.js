@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     View,
     Text,
@@ -23,14 +23,62 @@ import { SafeAreaView, StatusBar, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import ExpandableCard from "../dashboard/ExpandableCard";
+import { getUserVouchers, clearQueryState } from "../../actions/voucherActions";
 
 const FeeDetails = ({ navigation }) => {
+    const dispatch = useDispatch()
     const [visible, setVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [vouchers, setVouchers] = useState([]);
+    const [get, setGet] = useState(true);
+    const user = useSelector((state) => state.loginReducer.user);
+    // let voucherData = useSelector((state) => state.voucherReducer.vouchers);
+    const linkD = "http://www.africau.edu/images/default/sample.pdf";
+
+    let voucherData = {
+        vouchers: [
+            {
+                id: 1,
+                tutionFee: 1000,
+                admissionFee: 100,
+                regFee: 100,
+                examinationFee: 100,
+                discount: 100,
+                arrears: 100,
+                payable: 1000,
+                voucherForMonth: "08-2022",
+            }
+
+        ]
+    }
+    console.log(typeof (voucherData["vouchers"][0]["examinationFee"]))
+
+    useEffect(() => {
+
+        if (get) {
+            dispatch(getUserVouchers(user.id))
+            setGet(false)
+        }
+        if (voucherData.queryRun) {
+            setVouchers(voucherData.vouchers)
+            setIsLoading(false)
+            dispatch(clearQueryState())
+        }
+    }, [voucherData.queryRun])
+
 
     const toggleOverlay = () => {
         Vibration.vibrate(60)
         setVisible(!visible);
     };
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -66,7 +114,34 @@ const FeeDetails = ({ navigation }) => {
             </View>
             <ScrollView style={styles.bottomContainer}>
                 {/* Go into the card to manage the color of white 3 dots */}
-                <ExpandableCard
+                {voucherData.vouchers.map((voucher) => {
+                    let miscFee = parseInt(voucher.examinationFee) + parseInt(voucher.admissionFee) + parseInt(voucher.regFee)
+
+                    return (
+                        <ExpandableCard
+                            key={voucher.id}
+                            collapsedCardItems={[
+                                { label: voucher.voucherForMonth, value: "RS " + voucher.payable },
+                            ]}
+                            expandedCardItems={[
+                                { label: voucher.voucherForMonth, value: '' },
+                                { label: 'Tution Fee', value: 'Rs ' + voucher.tutionFee },
+                                { label: 'Misc. Fee', value: "Rs " + miscFee },
+                                { label: 'Discount', value: "Rs " + voucher.discount },
+                                { label: 'Arrears', value: "Rs " + voucher.arrears },
+                                { label: 'Total', value: "Rs " + voucher.payable },
+                            ]}
+                            style={styles.card}
+                            // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
+                            // valueStyle={{ fontFamily: 'open-sans-cond' }}
+                            labelStyle={{ fontSize: 20, color: "#fff" }}
+                            downloadLink={linkD}
+                        />
+                    )
+                }
+                )}
+
+                {/* <ExpandableCard
 
                     collapsedCardItems={[
                         { label: 'June 2022', value: '' },
@@ -87,7 +162,6 @@ const FeeDetails = ({ navigation }) => {
                     labelStyle={{ fontSize: 20, color: "#fff" }}
                 />
                 <ExpandableCard
-
                     collapsedCardItems={[
                         { label: 'June 2022', value: '' },
                         { label: 'Rs 2000', value: 'PAID' },
@@ -105,26 +179,7 @@ const FeeDetails = ({ navigation }) => {
                     // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
                     // valueStyle={{ fontFamily: 'open-sans-cond' }}
                     labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
-                <ExpandableCard
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
+                /> */}
             </ScrollView>
         </SafeAreaView >
     )
