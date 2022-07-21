@@ -118,7 +118,7 @@ const Result = ({ navigation }) => {
                 </View>
             </View>
             <ScrollView style={styles.bottomContainer}>
-                {Object.keys(voucherData).length !== 0 ?
+                {Object.keys(resultData).length !== 0 ?
                     <View style={styles.tableContainer}>
                         <DataTable>
                             <DataTable.Header>
@@ -136,7 +136,6 @@ const Result = ({ navigation }) => {
                                             Vibration.vibrate(50)
                                             // download file from downloadLink
                                             handleDownload(result.link)
-                                            console.log("HERL")
                                         }} />
                                     </DataTable.Cell>
                                 </DataTable.Row>

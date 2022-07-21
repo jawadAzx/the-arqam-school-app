@@ -1,34 +1,27 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     View,
     Text,
-    Image,
     ScrollView,
-    TextInput,
     StyleSheet,
-    Alert,
-    ActivityIndicator,
     Dimensions,
     TouchableOpacity,
-    KeyboardAvoidingView,
     Vibration,
-    FlatList
 } from "react-native";
-import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useFonts } from "expo-font";
-const { width, height } = Dimensions.get("screen");
-import { SafeAreaView, StatusBar, Platform } from 'react-native';
+import { SafeAreaView, Platform } from 'react-native';
 import { Icon, Overlay } from "react-native-elements";
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Card, Title } from 'react-native-paper';
 import { onSnapshot, collection } from '@firebase/firestore';
+
 import db from '../../../firebase';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { retrieveUser } from '../../actions/loginAction';
+
 const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
-// const colors = ["#32213A", "#383B53", "#66717E", "#D4D6B9", "#D1CAA1"];
+const { width, height } = Dimensions.get("screen");
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -89,7 +82,6 @@ const Dashboard = ({ navigation }) => {
                 return b.id - a.id;
             }
             );
-            // console.log(oldData.length !== temp.length && oldData.length !== 0, oldData.length, temp.length, announcementsData);
 
             if (oldData.length !== temp.length && oldData.length !== 0) {
                 await schedulePushNotification(temp[0].title, temp[0].description);
@@ -219,7 +211,6 @@ async function registerForPushNotificationsAsync() {
 
 
 const styles = StyleSheet.create({
-    // make color pallet
 
     container: {
         flex: 1,
@@ -352,18 +343,6 @@ const styles = StyleSheet.create({
         marginTop: height / 30,
         height: height / 7,
     },
-    // card5: {
-    //     backgroundColor: colors[],
-    //     flexDirection: 'row',
-    //     justifyContent: 'flex-start',
-    //     alignItems: 'flex-start',
-    //     marginRight: width / 16,
-    //     marginLeft: width / 16,
-    //     borderTopLeftRadius: 20,
-    //     borderBottomRightRadius: 20,
-    //     marginTop: height / 30,
-    //     height: height / 7,
-    // },
 
     cardContent: {
         flex: 1,

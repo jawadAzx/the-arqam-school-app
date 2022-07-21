@@ -98,7 +98,6 @@ const Attendance = ({ navigation }) => {
         updateDates(month);
         setFirstUpdate(false);
     }
-    // console.log(attendanceDate);
     return (
         <SafeAreaView style={styles.container}>
 

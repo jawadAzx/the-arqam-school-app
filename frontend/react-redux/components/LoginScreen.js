@@ -3,22 +3,17 @@ import {
     View,
     Text,
     Image,
-    Button,
-    ScrollView,
     TextInput,
     StyleSheet,
     Alert,
     ActivityIndicator,
     Dimensions,
     TouchableOpacity,
-    KeyboardAvoidingView,
     Vibration
 } from "react-native";
-import axios from "axios";
 import { useContext } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { isLoaded, useFonts } from "expo-font";
 import { useState } from "react";
 const { width, height } = Dimensions.get("screen");
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -45,13 +40,11 @@ const LoginScreen = ({ navigation }) => {
         Vibration.vibrate(40);
         setLoading(true);
         dispatch(login(loginId, hashedPassword));
-        // signIn(loginId, loginPassword);
     }
 
     let allowed = useSelector((state) => state.loginReducer).allowed;
     let queryRun = useSelector((state) => state.loginReducer).queryRun;
     let user = useSelector((state) => state.loginReducer).user;
-    // console.log(queryRun)
     if (queryRun) {
         if (allowed && user.type === "student") {
             signIn(user);

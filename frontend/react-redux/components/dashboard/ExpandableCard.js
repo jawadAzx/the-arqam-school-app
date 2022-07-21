@@ -150,7 +150,6 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
                 Vibration.vibrate(50)
                 // download file from downloadLink
                 handleDownload()
-                console.log("HERL")
               }} />
             </View>
           </View>

@@ -1,10 +1,9 @@
 import { Provider } from "react-redux";
 import store from "./store";
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useState, useEffect, useMemo, useReducer } from "react";
+import { useState, useEffect, useMemo } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from "./react-redux/components/context";
 import LoginScreen from './react-redux/components/LoginScreen';
@@ -23,7 +22,6 @@ export default function App() {
 
   const authContext = useMemo(() => ({
     signIn: async (user) => {
-      // create a new unique token
       const token = Math.random().toString();
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -68,7 +66,6 @@ export default function App() {
         <NavigationContainer>
           {userToken !== null ? (
             <Stack.Navigator
-              // initialRouteName="Home"
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen name="Dashboard" component={Dashboard} />
