@@ -32,45 +32,39 @@ const FeeDetails = ({ navigation }) => {
     const [vouchers, setVouchers] = useState([]);
     const [get, setGet] = useState(true);
     const user = useSelector((state) => state.loginReducer.user);
-    // let voucherData = useSelector((state) => state.voucherReducer.vouchers);
+    let voucherData = useSelector((state) => state.voucherReducer.vouchers);
+    let queryRun = useSelector((state) => state.voucherReducer.queryRun);
     const linkD = "http://www.africau.edu/images/default/sample.pdf";
 
-    let voucherData = {
-        vouchers: [
-            {
-                id: 1,
-                tutionFee: 1000,
-                admissionFee: 100,
-                regFee: 100,
-                examinationFee: 100,
-                discount: 100,
-                arrears: 100,
-                payable: 1000,
-                voucherForMonth: "08-2022",
-            }
+    // let voucherData = {
+    //     vouchers: [
+    //         {
+    //             id: 1,
+    //             tutionFee: 1000,
+    //             admissionFee: 100,
+    //             regFee: 100,
+    //             examinationFee: 100,
+    //             discount: 100,
+    //             arrears: 100,
+    //             payable: 1000,
+    //             voucherForMonth: "08-2022",
+    //         }
 
-        ]
-    }
-    console.log(typeof (voucherData["vouchers"][0]["examinationFee"]))
+    //     ]
+    // }
 
     useEffect(() => {
-
-        if (get) {
-            dispatch(getUserVouchers(user.id))
-            setGet(false)
-        }
-        if (voucherData.queryRun) {
-            setVouchers(voucherData.vouchers)
+        if (queryRun) {
+            // setVouchers(voucherData)
             setIsLoading(false)
             dispatch(clearQueryState())
         }
-    }, [voucherData.queryRun])
+    }, [queryRun])
 
-
-    const toggleOverlay = () => {
-        Vibration.vibrate(60)
-        setVisible(!visible);
-    };
+    if (get) {
+        dispatch(getUserVouchers(user.id))
+        setGet(false)
+    }
 
     if (isLoading) {
         return (
@@ -79,6 +73,7 @@ const FeeDetails = ({ navigation }) => {
             </View>
         )
     }
+    // check of voucher data is an emppty object
 
     return (
         <SafeAreaView style={styles.container}>
@@ -114,72 +109,39 @@ const FeeDetails = ({ navigation }) => {
             </View>
             <ScrollView style={styles.bottomContainer}>
                 {/* Go into the card to manage the color of white 3 dots */}
-                {voucherData.vouchers.map((voucher) => {
-                    let miscFee = parseInt(voucher.examinationFee) + parseInt(voucher.admissionFee) + parseInt(voucher.regFee)
+                {Object.keys(voucherData).length !== 0 ?
 
-                    return (
-                        <ExpandableCard
-                            key={voucher.id}
-                            collapsedCardItems={[
-                                { label: voucher.voucherForMonth, value: "RS " + voucher.payable },
-                            ]}
-                            expandedCardItems={[
-                                { label: voucher.voucherForMonth, value: '' },
-                                { label: 'Tution Fee', value: 'Rs ' + voucher.tutionFee },
-                                { label: 'Misc. Fee', value: "Rs " + miscFee },
-                                { label: 'Discount', value: "Rs " + voucher.discount },
-                                { label: 'Arrears', value: "Rs " + voucher.arrears },
-                                { label: 'Total', value: "Rs " + voucher.payable },
-                            ]}
-                            style={styles.card}
-                            // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                            // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                            labelStyle={{ fontSize: 20, color: "#fff" }}
-                            downloadLink={linkD}
-                        />
+                    voucherData.vouchers.map((voucher) => {
+                        let miscFee = parseInt(voucher.examinationFee) + parseInt(voucher.admissionFee) + parseInt(voucher.regFee)
+
+                        return (
+                            <ExpandableCard
+                                key={voucher.id}
+                                collapsedCardItems={[
+                                    { label: voucher.voucherForMonth, value: "RS " + voucher.payable },
+                                ]}
+                                expandedCardItems={[
+                                    { label: voucher.voucherForMonth, value: '' },
+                                    { label: 'Tution Fee', value: 'Rs ' + voucher.tutionFee },
+                                    { label: 'Misc. Fee', value: "Rs " + miscFee },
+                                    { label: 'Discount', value: "Rs " + voucher.discount },
+                                    { label: 'Arrears', value: "Rs " + voucher.arrears },
+                                    { label: 'Total', value: "Rs " + voucher.payable },
+                                ]}
+                                style={styles.card}
+                                // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
+                                // valueStyle={{ fontFamily: 'open-sans-cond' }}
+                                labelStyle={{ fontSize: 20, color: "#fff" }}
+                                downloadLink={linkD}
+                            />
+                        )
+                    }
                     )
+                    :
+                    <View style={styles.noVoucherContainer}>
+                        <Text style={styles.noVoucherText}>No Vouchers Found</Text>
+                    </View>
                 }
-                )}
-
-                {/* <ExpandableCard
-
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                />
-                <ExpandableCard
-                    collapsedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                    ]}
-                    expandedCardItems={[
-                        { label: 'June 2022', value: '' },
-                        { label: 'Rs 2000', value: 'PAID' },
-                        { label: 'Tution Fee', value: 'Rs 1500' },
-                        { label: 'Registration Fee', value: "Rs 300" },
-                        { label: 'Exam Fee', value: "Rs 200" },
-                        { label: 'Total', value: "Rs 200" }
-
-                    ]}
-                    style={styles.card}
-                    // labelStyle={{ fontFamily: 'open-sans-cond-bold' }}
-                    // valueStyle={{ fontFamily: 'open-sans-cond' }}
-                    labelStyle={{ fontSize: 20, color: "#fff" }}
-                /> */}
             </ScrollView>
         </SafeAreaView >
     )
@@ -256,8 +218,24 @@ const styles = StyleSheet.create({
         width: width - 40,
         borderTopLeftRadius: 20,
         borderBottomRightRadius: 20,
-
-
     },
+    noVoucherContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: height / 30,
+        marginLeft: width / 10,
+        marginRight: width / 10,
+        // width: width / 1.23,
+    },
+    noVoucherText: {
+        color: '#1560bd',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: height / 3000,
+        marginLeft: width / 25,
+    }
+
 })
 export default FeeDetails

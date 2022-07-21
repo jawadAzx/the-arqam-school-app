@@ -164,7 +164,9 @@ const Dashboard = ({ navigation }) => {
                                 )
                             })
                             :
-                            <Text style={styles.noAnnouncements}>No announcements  </Text>
+                            <View style={styles.noAnnouncementContainer}>
+                                <Text style={styles.noAnnouncements}>No announcements  </Text>
+                            </View>
 
                         }
                     </View>
@@ -403,6 +405,17 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 15,
         marginBottom: height / 100
+    },
+    noAnnouncementsContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: height / 30,
+        marginLeft: width / 10,
+        marginRight: width / 10,
+        // width: width / 1.23,
+
     },
     noAnnouncements: {
         color: '#1560bd',

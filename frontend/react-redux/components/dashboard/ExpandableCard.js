@@ -13,6 +13,7 @@ const ExpandableCard = ({ expandedCardItems, collapsedCardItems, labelStyle, val
   const [heightMaximized, setHeightMaximized] = useState(0);
   const [heightValue] = useState(new Animated.Value(1000));
   const [isLoading, setIsLoading] = useState(false);
+  const [document, setDocument] = useState(false);
 
   useEffect(() => {
     heightValue.setValue(heightCollapsed);

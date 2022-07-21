@@ -79,7 +79,11 @@ const Menu = ({ navigation }) => {
                     />
                     <Text style={styles.menuText}>Fee Details</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={() => Vibration.vibrate(40)}
+                <TouchableOpacity style={styles.menuItem} onPress={() => {
+                    Vibration.vibrate(40)
+                    navigation.navigate('Result')
+
+                }}
                 >
                     <Icon name="results" type="foundation" color="#fff" size={width / 12} containerStyle={{
                         position: "absolute",

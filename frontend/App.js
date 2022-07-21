@@ -13,6 +13,7 @@ import Menu from './react-redux/components/dashboard/Menu';
 import FeeDetails from './react-redux/components/dashboard/FeeDetails';
 import Profile from './react-redux/components/dashboard/Profile';
 import Attendance from './react-redux/components/dashboard/Attendance';
+import Result from './react-redux/components/dashboard/Result';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -70,11 +71,12 @@ export default function App() {
               // initialRouteName="Home"
               screenOptions={{ headerShown: false }}
             >
-              {/* <Stack.Screen name="Dashboard" component={Dashboard} />
-              <Stack.Screen name="Menu" component={Menu} /> */}
+              <Stack.Screen name="Dashboard" component={Dashboard} />
+              <Stack.Screen name="Menu" component={Menu} />
               <Stack.Screen name="FeeDetails" component={FeeDetails} />
-              {/* <Stack.Screen name="Profile" component={Profile} />
-              <Stack.Screen name="Attendance" component={Attendance} /> */}
+              <Stack.Screen name="Profile" component={Profile} />
+              <Stack.Screen name="Attendance" component={Attendance} />
+              <Stack.Screen name="Result" component={Result} />
             </Stack.Navigator>) :
 
             <LoginScreen />
