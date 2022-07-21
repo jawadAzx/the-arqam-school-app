@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 
 const { addUser, getUser, getUserById, loginUser, updateAttendace, getUserAttendance, uploadVoucher,
-    getUserVoucher, getClassByClassIdAttendance, getClassByClassId, uploadResult
+    getUserVoucher, getClassByClassIdAttendance, getClassByClassId, uploadResult, getUserResult
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -25,6 +25,7 @@ router.get("/attendance/:id", getUserAttendance)
 router.get("/voucher/:id", getUserVoucher)
 router.get("/class/attendance/:id", getClassByClassIdAttendance)
 router.get("/class/:id", getClassByClassId)
+router.get("/result/:id", getResult)
 // what link to get user by id
 
 module.exports = router

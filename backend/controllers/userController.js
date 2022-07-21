@@ -6,6 +6,19 @@ require("firebase/storage");
 const storage = firebase.storage().ref();
 global.XMLHttpRequest = require("xhr2");
 
+const getUserResult = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const user = await firestore.collection('users').doc(id).get();
+        const results = user.data()["results"];
+        res.send(results);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message);
+    }
+}
+
+
 // Add Image to Storage and return the file path
 const uploadResult = async (req, res) => {
     try {
@@ -121,7 +134,6 @@ const uploadVoucher = async (req, res) => {
 const getUserVoucher = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log("down", id)
         const user = await firestore.collection('users').doc(id).get();
         const vouchers = user.data()["vouchers"];
         res.send(vouchers);
@@ -325,5 +337,6 @@ module.exports = {
     getUserVoucher,
     getClassByClassIdAttendance,
     getClassByClassId,
-    uploadResult
+    uploadResult,
+    getUserResult
 }
