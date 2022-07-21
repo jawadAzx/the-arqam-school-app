@@ -24,9 +24,10 @@
         }
       ]
     ],
-    
     "packagerOpts": {
-      "sourceExts": ["cjs"]
+      "sourceExts": [
+        "cjs"
+      ]
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -41,7 +42,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.jawadazx.TAS"
     },
     "web": {
       "favicon": "./assets/favicon.png"
