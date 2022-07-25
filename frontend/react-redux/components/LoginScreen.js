@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 15,
         marginLeft: width / 10,
+        width: width 
     },
     usernameInput: {
         fontSize: 25,
@@ -172,6 +173,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 40 - 5,
         marginLeft: width / 10,
+        width: width
     },
     passwordTitle: {
         fontSize: 20,
@@ -179,6 +181,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 40,
         marginLeft: width / 10,
+        width: width
     },
     passwordInput: {
         fontSize: 25,
@@ -186,6 +189,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 40 - 5,
         marginLeft: width / 10,
+        width: width
 
     },
     button: {

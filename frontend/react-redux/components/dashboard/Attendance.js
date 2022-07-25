@@ -196,10 +196,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: "flex-start",
         alignContent: "flex-start",
+        width: width,
     },
     topContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        width: width,
 
     },
     leftContainer: {
@@ -211,6 +213,7 @@ const styles = StyleSheet.create({
         width: width / 2,
         height: height / 6,
         borderBottomLeftRadius: 20,
+        width: width / 2,
     },
 
     rightContainer: {
@@ -228,6 +231,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 30,
         marginLeft: width / 5,
+        textAlign: 'center',
+        width: width 
     },
     rightContainerSubTitle: {
         color: '#D3D3D3',

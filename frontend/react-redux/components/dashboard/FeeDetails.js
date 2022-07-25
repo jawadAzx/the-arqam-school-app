@@ -183,6 +183,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: height / 30,
         marginLeft: width / 5,
+        textAlign: 'center',
+        width: width 
     },
     rightContainerSubTitle: {
         color: '#D3D3D3',
