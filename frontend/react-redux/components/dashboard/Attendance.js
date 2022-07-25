@@ -36,9 +36,9 @@ const Attendance = ({ navigation }) => {
     const [presentDates, setPresentDates] = useState([]);
     const [absentDates, setAbsentDates] = useState([]);
     const [leaveDates, setLeaveDates] = useState([]);
+    let persisted = useSelector((state) => state.attendanceReducer.persisted);
 
-
-    if (get) {
+    if (get && !persisted) {
         dispatch(getUserAttendance(user.id));
         setGet(false);
     }

@@ -7,18 +7,20 @@ import {
     Dimensions,
     TouchableOpacity,
     Vibration,
+    SafeAreaView,
+    Platform
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { SafeAreaView, Platform } from 'react-native';
+import { useDispatch, useSelector } from "react-redux";
 import { Icon, Overlay } from "react-native-elements";
 import { Card, Title } from 'react-native-paper';
-import { onSnapshot, collection } from '@firebase/firestore';
-
+import { onSnapshot, doc } from '@firebase/firestore';
 import db from '../../../firebase';
+
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+
 import { retrieveUser } from '../../actions/loginAction';
+import { addAnnouncements, getAnnouncements, deleteAnnouncementsfromBackend } from "../../actions/announcementActions";
 
 const colors = ["#00b1bf", "#0085b6", "#00d49d", "#202971", "#ff005d"];
 const { width, height } = Dimensions.get("screen");
@@ -39,10 +41,17 @@ const Dashboard = ({ navigation }) => {
     const [notSeperate, setNotSeperate] = useState(true);
     const [announcementIndex, setAnnouncementIndex] = useState(0);
     const [announcementsData, setAnnouncementsData] = useState([]);
+    const [updated, setUpdated] = useState(false);
     const [notification, setNotification] = useState(false);
+    const [persistedGet, setPersistedGet] = useState(false);
+    const [expoPushToken, setExpoPushToken] = useState(null);
+
     const user = useSelector((state) => state.loginReducer.user);
     const notificationListener = useRef();
     const responseListener = useRef();
+
+    let persisted = useSelector((state) => state.announcementReducer.persisted);
+    let data = useSelector((state) => state.announcementReducer.announcements);
 
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -59,37 +68,76 @@ const Dashboard = ({ navigation }) => {
             Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
+
     const toggleOverlay = (idx) => {
         Vibration.vibrate(60)
         setVisible(!visible);
         setNotSeperate(!notSeperate);
         setAnnouncementIndex(idx);
     };
+
     const handlePress = () => {
         Vibration.vibrate(40)
         navigation.navigate('Menu')
     }
+
     if (get) {
         dispatch(retrieveUser());
+        dispatch(getAnnouncements());
         setGet(false);
     }
-    useEffect(() =>
-        onSnapshot(collection(db, 'announcements'), async (snapshot) => {
-            let oldData = announcementsData;
-            let temp = snapshot.docs.map(doc => doc.data());
-            // sort temp by id in descending order
+    useEffect(() => {
+        if (persisted) {
+            setPersistedGet(false);
+        }
+    }, [persisted]);
+    useEffect(() => {
+        if (data.length > 0) {
+            // sort data by id
+            data.sort((a, b) => {
+                return b.id - a.id;
+            }
+            );
+            setAnnouncementsData(data);
+            setUpdated(true);
+        }
+
+    }, [data]);
+
+    useEffect(() => {
+        let oldData = announcementsData;
+
+        const unsubscribe = onSnapshot(doc(db, "notifications/", user.id), async (snapshot) => {
+            console.log("BRRRRRRRRRRRRRRRRR", oldData.length)
+
+            let temp = snapshot.data()["data"];
+
             temp.sort((a, b) => {
                 return b.id - a.id;
             }
             );
 
-            if (oldData.length !== temp.length && oldData.length !== 0) {
-                await schedulePushNotification(temp[0].title, temp[0].description);
-            }
-            setAnnouncementsData(temp);
+            // if (oldData.length !== temp.length && oldData.length !== 0) {
+            //     await schedulePushNotification(temp[0].title, temp[0].description);
+            // }
 
-        })
-        , [announcementsData]);
+            if (oldData.length !== 0 && temp.length !== 0) {
+                dispatch(addAnnouncements(temp));
+                setTimeout(() => {
+                    dispatch(deleteAnnouncementsfromBackend(user.id));
+                }, 2000);
+                let newData = temp.concat(announcementsData);
+                setAnnouncementsData(newData);
+            }
+
+        }
+        )
+        return () => {
+            unsubscribe();
+        }
+
+    }, [updated]);
+
 
     return (
         <SafeAreaView style={styles.container}>

@@ -1,6 +1,7 @@
 const initialData = {
     queryRun: false,
     announcements: {},
+    persisted: false,
 };
 const announcementReducer = (state = initialData, action) => {
     switch (action.type) {
@@ -9,7 +10,17 @@ const announcementReducer = (state = initialData, action) => {
                 ...state,
                 announcements: action.payload,
                 queryRun: true,
+                persisted: true,
             };
+        case "ADD_ANNOUNCEMENTS":
+            return {
+                ...state,
+                // announcements: action.payload,
+                queryRun: true,
+                persisted: true,
+            };
+
+
         case "CLEAR_QUERY_STATE":
             return {
                 ...state,
@@ -20,6 +31,7 @@ const announcementReducer = (state = initialData, action) => {
                 ...state,
                 announcements: {},
                 queryRun: false,
+                persisted: false,
             };
 
         default:

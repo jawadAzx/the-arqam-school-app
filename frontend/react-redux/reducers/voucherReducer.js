@@ -2,6 +2,7 @@ const initialState = {
     vouchers: {},
     queryRun: false,
     isLoading: false,
+    persisted: false,
 }
 
 const voucherReducer = (state = initialState, action) => {
@@ -12,6 +13,7 @@ const voucherReducer = (state = initialState, action) => {
                 vouchers: action.payload,
                 isLoading: false,
                 queryRun: true,
+                persisted: true
             }
         case "CLEAR_QUERY_STATE":
             return {
@@ -23,6 +25,15 @@ const voucherReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: true,
             }
+        case "LOGOUT":
+            return {
+                ...state,
+                vouchers: {},
+                queryRun: false,
+                isLoading: false,
+                persisted: false,
+            }
+
         default:
             return state;
     }

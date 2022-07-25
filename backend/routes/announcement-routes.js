@@ -1,8 +1,11 @@
 const express = require('express');
-const { addAnnouncement, getAnnouncements } = require('../controllers/annoucementController');
+const { addAnnouncementNotification, getAnnouncements, deleteNotifications } = require('../controllers/annoucementController');
 const router = express.Router();
 
-router.post("/", addAnnouncement)
+router.post("/", addAnnouncementNotification)
+
+// router.post("/")
 router.get("/", getAnnouncements)
+router.delete("/:id", deleteNotifications)
 
 module.exports = router
