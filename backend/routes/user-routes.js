@@ -25,7 +25,7 @@ router.get("/attendance/:id", getUserAttendance)
 router.get("/voucher/:id", getUserVoucher)
 router.get("/class/attendance/:id", getClassByClassIdAttendance)
 router.get("/class/:id", getClassByClassId)
-router.get("/result/:id", getResult)
+router.get("/result/:id", getUserResult)
 // what link to get user by id
 
 module.exports = router

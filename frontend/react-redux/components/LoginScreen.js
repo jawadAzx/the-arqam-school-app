@@ -20,6 +20,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { login, clearQueryState } from "../actions/loginAction";
 import { AuthContext } from "./context"
 import * as Crypto from "expo-crypto";
+import { getAnnouncementsBackend } from "../actions/announcementActions";
+
 
 const LoginScreen = ({ navigation }) => {
     const [loginId, setLoginId] = useState("");
@@ -47,6 +49,7 @@ const LoginScreen = ({ navigation }) => {
     let user = useSelector((state) => state.loginReducer).user;
     if (queryRun) {
         if (allowed && user.type === "student") {
+            dispatch(getAnnouncementsBackend());
             signIn(user);
             dispatch(clearQueryState());
         }

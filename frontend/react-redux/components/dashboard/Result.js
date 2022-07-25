@@ -33,12 +33,12 @@ const Result = ({ navigation }) => {
     const [link, setLink] = useState("");
     let resultData = useSelector((state) => state.resultReducer.results);
     let queryRun = useSelector((state) => state.resultReducer.queryRun);
-    useEffect(() => {
-        if (queryRun) {
-            setIsLoading(false);
-            dispatch(clearQueryState());
-        }
-    }, [queryRun]);
+    let persisted = useSelector((state) => state.resultReducer.persisted);
+    if (queryRun) {
+        setIsLoading(false);
+        dispatch(clearQueryState());
+    }
+
 
     // let resultData = {
     //     results: [
@@ -52,7 +52,7 @@ const Result = ({ navigation }) => {
     //     ]
     // }
 
-    if (get) {
+    if (get && !persisted) {
         dispatch(getUserResult(user.id))
         setGet(false)
     }

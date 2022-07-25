@@ -34,6 +34,7 @@ const FeeDetails = ({ navigation }) => {
     const user = useSelector((state) => state.loginReducer.user);
     let voucherData = useSelector((state) => state.voucherReducer.vouchers);
     let queryRun = useSelector((state) => state.voucherReducer.queryRun);
+    let persisted = useSelector((state) => state.voucherReducer.persisted);
     const linkD = "http://www.africau.edu/images/default/sample.pdf";
 
     // let voucherData = {
@@ -53,15 +54,13 @@ const FeeDetails = ({ navigation }) => {
     //     ]
     // }
 
-    useEffect(() => {
-        if (queryRun) {
-            // setVouchers(voucherData)
-            setIsLoading(false)
-            dispatch(clearQueryState())
-        }
-    }, [queryRun])
+    if (queryRun) {
+        setVouchers(voucherData)
+        setIsLoading(false)
+        dispatch(clearQueryState())
+    }
 
-    if (get) {
+    if (get && !persisted) {
         dispatch(getUserVouchers(user.id))
         setGet(false)
     }
@@ -109,9 +108,9 @@ const FeeDetails = ({ navigation }) => {
             </View>
             <ScrollView style={styles.bottomContainer}>
                 {/* Go into the card to manage the color of white 3 dots */}
-                {Object.keys(voucherData).length !== 0 ?
+                {vouchers.length !== 0 ?
 
-                    voucherData.vouchers.map((voucher) => {
+                    vouchers.map((voucher) => {
                         let miscFee = parseInt(voucher.examinationFee) + parseInt(voucher.admissionFee) + parseInt(voucher.regFee)
 
                         return (

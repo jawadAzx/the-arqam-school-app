@@ -3,6 +3,7 @@ const initialData = {
     presentDates: [],
     absentDates: [],
     leaveDates: [],
+    persisted: false,
 }
 const attendanceReducer = (state = initialData, action) => {
     const data = action.payload;
@@ -14,6 +15,7 @@ const attendanceReducer = (state = initialData, action) => {
                 absentDates: data.absentDates,
                 leaveDates: data.leaveDates,
                 queryRun: true,
+                persisted: true,
             };
         case "CLEAR_QUERY_STATE":
             return {
@@ -27,6 +29,7 @@ const attendanceReducer = (state = initialData, action) => {
                 absentDates: [],
                 leaveDates: [],
                 queryRun: false,
+                persisted: false,
             };
 
         default:
