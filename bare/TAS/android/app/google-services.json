@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "715501499234",
+    "project_id": "the-arqam-school-backend",
+    "storage_bucket": "the-arqam-school-backend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715501499234:android:88d2411e3fef15b3de723b",
+        "android_client_info": {
+          "package_name": "com.tas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715501499234-oqbmujp16hppok1jtuvi7grkigodljhl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArL3H_FfbosnbnWYIsw_Fep6edB0av8qc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715501499234-oqbmujp16hppok1jtuvi7grkigodljhl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
