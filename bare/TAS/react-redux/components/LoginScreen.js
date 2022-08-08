@@ -44,13 +44,14 @@ const LoginScreen = ({ navigation }) => {
         dispatch(login(loginId, hashedPassword, token));
 
     }
-    console.log(queryRun)
     let allowed = useSelector((state) => state.loginReducer).allowed;
     let queryRun = useSelector((state) => state.loginReducer).queryRun;
     let user = useSelector((state) => state.loginReducer).user;
     if (queryRun) {
         if (allowed && user.type === "student") {
-            dispatch(getAnnouncementsBackend());
+            let grade_sec = user.grade + "-" + user.section
+            console.log(grade_sec)
+            dispatch(getAnnouncementsBackend(grade_sec));
             signIn(user);
             dispatch(clearQueryState());
         }

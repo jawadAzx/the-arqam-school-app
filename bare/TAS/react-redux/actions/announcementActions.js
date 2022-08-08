@@ -11,9 +11,10 @@ export const getAnnouncements = () => {
     }
 
 }
-export const getAnnouncementsBackend = () => {
+export const getAnnouncementsBackend = (grade_sec) => {
     return async (dispatch) => {
-        const response = await axios.get(address + '/api/announcement');
+        console.log(grade_sec)
+        const response = await axios.get(address + '/api/announcement/' + grade_sec);
         if (AsyncStorage.getItem('announcements') === null) {
             AsyncStorage.setItem('announcements', JSON.stringify(response.data));
         }
