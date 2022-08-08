@@ -15,7 +15,7 @@ const announcementReducer = (state = initialData, action) => {
         case "ADD_ANNOUNCEMENTS":
             return {
                 ...state,
-                // announcements: action.payload,
+                announcements: action.payload,
                 queryRun: true,
                 persisted: true,
             };

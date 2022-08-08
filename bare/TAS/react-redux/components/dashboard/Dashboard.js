@@ -68,6 +68,7 @@ const Dashboard = ({ navigation }) => {
         if (get) {
             dispatch(retrieveUser());
             dispatch(getAnnouncements());
+            // dispatch(getAnnouncementsBackend());
             setGet(false);
         }
     }, [])
@@ -101,6 +102,7 @@ const Dashboard = ({ navigation }) => {
             let time = remoteMessage["data"]["time"];
             let id = remoteMessage["data"]["id"];
             let date = remoteMessage["data"]["date"];
+
             let temp = {
                 title: title,
                 description: description,
@@ -119,7 +121,7 @@ const Dashboard = ({ navigation }) => {
                 showWhenUnlocked: true,
             });
 
-            dispatch(getAnnouncementsBackend());
+            dispatch(addAnnouncements(temp));
 
         });
 

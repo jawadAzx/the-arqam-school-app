@@ -22,7 +22,7 @@ export const getAnnouncementsBackend = () => {
             const oldAnnouncements = await AsyncStorage.removeItem('announcements');
             // set new announcements
             await AsyncStorage.setItem('announcements', JSON.stringify(response.data));
-   
+
         }
         dispatch({
             type: "GET_ANNOUNCEMENTS",
@@ -35,13 +35,15 @@ export const addAnnouncements = (announcement) => {
     // store announcement in async storage
     return async (dispatch) => {
         const announcements = await AsyncStorage.getItem('announcements');
+        // console.log(JSON.parse(announcements)[0]);
+        // console.log("There",announcement)
         const newAnnouncements = announcements ? JSON.parse(announcements) : [];
-        newAnnouncements.push(announcement[0]);
+        newAnnouncements.push(announcement);
         await AsyncStorage.setItem('announcements', JSON.stringify(newAnnouncements));
-        // also delet 
+
         dispatch({
             type: "ADD_ANNOUNCEMENTS",
-            payload: "None"
+            payload: newAnnouncements,
         });
 
     }
